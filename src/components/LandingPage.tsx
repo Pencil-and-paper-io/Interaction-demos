@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { useMemo, useEffect, useState, useRef, memo } from 'react'
 import { Grid, Card, Heading, Text, Box, Flex, Inset } from '@radix-ui/themes'
 import { Play, Cube, Sparkle } from '@phosphor-icons/react'
@@ -275,12 +276,16 @@ export default function LandingPage() {
 
                   {/* CTAs */}
                   <Flex direction="column" gap="2" style={{ marginTop: 'var(--space-2)' }}>
-                    <Button as="a" href={prototype.route} size="3" variant="solid">
-                      View Prototype
-                    </Button>
-                    <Button as="a" href={`/docs/${prototype.id}`} size="3" variant="soft">
-                      Documentation
-                    </Button>
+                    <Link to={prototype.route} style={{ textDecoration: 'none', display: 'block' }}>
+                      <Button size="3" variant="solid">
+                        View Prototype
+                      </Button>
+                    </Link>
+                    <Link to={`/docs/${prototype.id}`} style={{ textDecoration: 'none', display: 'block' }}>
+                      <Button size="3" variant="soft">
+                        Documentation
+                      </Button>
+                    </Link>
                   </Flex>
 
                   {/* Optional Loom Link */}

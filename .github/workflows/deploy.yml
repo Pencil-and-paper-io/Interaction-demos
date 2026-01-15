@@ -1,7 +1,17 @@
 name: Deploy to GitHub Pages
 
+# This workflow deploys the prototype template to GitHub Pages.
+#
+# Setup Instructions:
+# 1. Go to repository Settings > Pages
+# 2. Set Source to "GitHub Actions"
+# 3. Push to main branch to trigger deployment
+#
+# Note: This workflow will fail if Pages is not enabled. That's expected for
+# the template repository. Enable Pages when you use this template for your project.
+
 on:
-  # Trigger on push to main branch
+  # Trigger on push to main branch only
   push:
     branches: [main]
 
@@ -37,13 +47,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Lint code
-        run: npm run lint
-
-      # Screenshot capture would go here
-      # - name: Capture screenshots
-      #   run: npm run screenshots
 
       - name: Build project
         run: npm run build

@@ -1,31 +1,17 @@
-import { CSSProperties, ReactNode, AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react'
+import { CSSProperties, ReactNode, ButtonHTMLAttributes } from 'react'
 
-interface ButtonBaseProps {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'solid' | 'soft' | 'ghost'
   size?: '2' | '3'
   children: ReactNode
   style?: CSSProperties
-  className?: string
 }
-
-type ButtonAsButton = ButtonBaseProps & ButtonHTMLAttributes<HTMLButtonElement> & {
-  as?: 'button'
-  href?: never
-}
-
-type ButtonAsAnchor = ButtonBaseProps & AnchorHTMLAttributes<HTMLAnchorElement> & {
-  as: 'a'
-  href: string
-}
-
-type ButtonProps = ButtonAsButton | ButtonAsAnchor
 
 export default function Button({
   variant = 'solid',
   size = '3',
   className = '',
   children,
-  as = 'button',
   style: customStyle,
   ...props
 }: ButtonProps) {
@@ -42,7 +28,6 @@ export default function Button({
     transition: 'all var(--duration-normal) ease',
     fontFamily: 'var(--default-font-family)',
     width: '100%',
-    textDecoration: 'none',
   }
 
   const variantStyles: Record<string, CSSProperties> = {
@@ -62,23 +47,11 @@ export default function Button({
 
   const combinedStyles = { ...baseStyles, ...variantStyles[variant], ...customStyle }
 
-  if (as === 'a') {
-    return (
-      <a
-        className={className}
-        style={combinedStyles}
-        {...(props as AnchorHTMLAttributes<HTMLAnchorElement>)}
-      >
-        {children}
-      </a>
-    )
-  }
-
   return (
     <button
       className={className}
       style={combinedStyles}
-      {...(props as ButtonHTMLAttributes<HTMLButtonElement>)}
+      {...props}
     >
       {children}
     </button>

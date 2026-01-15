@@ -142,26 +142,49 @@ Claude Code will prompt you for these details when creating a prototype with a F
 
 ## 📦 Deployment
 
-### GitHub Pages
+### GitHub Pages Setup
 
-1. Push to main branch
-2. GitHub Actions automatically:
-   - Generates prototype dates
-   - Captures screenshots
-   - Builds the project
-   - Deploys to GitHub Pages
+**Important**: This template repo has GitHub Pages disabled by design. When you use this template for your project, follow these steps to enable deployment:
 
-3. Visit `https://{username}.github.io/{repo-name}`
+#### 1. Enable GitHub Pages
 
-### Configuration
+1. Go to your repository **Settings** > **Pages**
+2. Under **Source**, select **GitHub Actions**
+3. Save the settings
 
-Update `vite.config.ts` with your repo name:
+#### 2. Configure Base Path
+
+Update `vite.config.ts` with your repository name:
 
 ```typescript
 export default defineConfig({
   base: process.env.NODE_ENV === 'production' ? '/your-repo-name/' : '/',
 })
 ```
+
+Replace `/your-repo-name/` with your actual repository name. For example, if your repo is `https://github.com/username/my-prototypes`, use `/my-prototypes/`.
+
+#### 3. Deploy
+
+Once Pages is enabled:
+
+1. **Push to main branch** - This triggers the deploy workflow
+2. **GitHub Actions automatically**:
+   - Runs lint and build checks (CI workflow)
+   - Generates prototype dates from git history
+   - Builds the project for production
+   - Deploys to GitHub Pages (deploy workflow)
+
+3. **Visit your site** at `https://{username}.github.io/{repo-name}`
+
+#### Workflows
+
+This template includes two workflows:
+
+- **CI** (`.github/workflows/ci.yml`) - Runs on all branches, checks lint and build
+- **Deploy** (`.github/workflows/deploy.yml`) - Runs on main branch, deploys to Pages
+
+The CI workflow will always pass on the template repo. The deploy workflow will fail until Pages is enabled—this is expected and normal.
 
 ## 📂 Project Structure
 
