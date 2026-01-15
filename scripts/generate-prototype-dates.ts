@@ -11,7 +11,7 @@ try {
   prototypeIds = entries
     .filter(entry => entry.isDirectory() && entry.name.startsWith('prototype-'))
     .map(entry => entry.name)
-} catch (error) {
+} catch {
   console.log('No prototypes directory found yet, creating empty dates file...')
 }
 
@@ -32,7 +32,7 @@ prototypeIds.forEach(protoId => {
       // If no commits found, use current date as fallback
       dates[protoId] = new Date().toISOString()
     }
-  } catch (error) {
+  } catch {
     // If git command fails or directory doesn't exist, use current date
     dates[protoId] = new Date().toISOString()
   }
