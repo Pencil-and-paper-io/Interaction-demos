@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
+    "@inquirer/prompts": "^8.2.0",
     "@playwright/test": "^1.40.0",
     "@types/node": "^24.2.1",
     "@types/react": "^19.1.10",

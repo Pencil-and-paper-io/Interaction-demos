@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { useMemo, useEffect } from 'react'
+import { useMemo, useEffect, useState } from 'react'
 import { Grid, Card, Heading, Text, Box, Flex, Inset, Button } from '@radix-ui/themes'
 import { Play, Cube, Sparkle } from '@phosphor-icons/react'
 import { getRelativeTime } from '../utils/relativeTime'
@@ -35,6 +35,63 @@ const prototypeData: Omit<PrototypeCard, 'lastUpdated'>[] = [
     route: '/prototype-2'
   }
 ]
+
+function PrototypeScreenshot({
+  prototypeId,
+  IconComponent
+}: {
+  prototypeId: string
+  IconComponent: React.ElementType
+}) {
+  const [imageLoaded, setImageLoaded] = useState(false)
+  const [imageError, setImageError] = useState(false)
+
+  return (
+    <Box
+      style={{
+        height: '280px',
+        backgroundColor: 'var(--gray-3)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderBottom: '1px solid var(--gray-6)',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      {/* Hidden img to check if screenshot exists */}
+      <img
+        src={`/screenshots/${prototypeId}.png`}
+        alt=""
+        style={{ display: 'none' }}
+        onLoad={() => setImageLoaded(true)}
+        onError={() => setImageError(true)}
+      />
+
+      {/* Show screenshot as background if loaded */}
+      {imageLoaded && !imageError && (
+        <Box
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: `url(/screenshots/${prototypeId}.png)`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        />
+      )}
+
+      {/* Show icon only if screenshot failed to load */}
+      {(!imageLoaded || imageError) && (
+        <IconComponent
+          size={80}
+          style={{ color: 'var(--gray-9)', opacity: 0.3 }}
+          weight="duotone"
+        />
+      )}
+    </Box>
+  )
+}
 
 export default function LandingPage() {
   const navigate = useNavigate()
@@ -135,22 +192,10 @@ export default function LandingPage() {
               >
                 {/* Primary Visual Area - Screenshot */}
                 <Inset side="top" pb="current">
-                  <Box
-                    style={{
-                      height: '280px',
-                      backgroundColor: 'var(--gray-3)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderBottom: '1px solid var(--gray-6)',
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                      backgroundImage: `url(/screenshots/${prototype.id}.png)`,
-                    }}
-                  >
-                    {/* Fallback icon if screenshot doesn't exist */}
-                    <IconComponent size={80} style={{ color: 'var(--gray-9)', opacity: 0.3 }} weight="duotone" />
-                  </Box>
+                  <PrototypeScreenshot
+                    prototypeId={prototype.id}
+                    IconComponent={IconComponent}
+                  />
                 </Inset>
 
                 {/* Bottom Section - Metadata & CTAs */}
@@ -161,7 +206,17 @@ export default function LandingPage() {
                   </Heading>
 
                   {/* Description */}
-                  <Text size="3" style={{ color: 'var(--gray-11)', flex: 1, lineHeight: 1.6 }}>
+                  <Text
+                    size="3"
+                    style={{
+                      color: 'var(--gray-11)',
+                      lineHeight: 1.6,
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                    }}
+                  >
                     {prototype.description}
                   </Text>
 
@@ -171,10 +226,9 @@ export default function LandingPage() {
                   </Text>
 
                   {/* CTAs */}
-                  <Flex gap="3" style={{ marginTop: 'var(--space-2)' }}>
+                  <Flex direction="column" gap="2" style={{ marginTop: 'var(--space-2)' }}>
                     <Button
                       size="3"
-                      style={{ flex: 1 }}
                       onClick={() => navigate(prototype.route)}
                     >
                       View Prototype

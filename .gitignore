@@ -30,3 +30,7 @@ dist-ssr
 
 # Generated files
 src/data/prototype-dates.json
+*.tsbuildinfo
+
+# Playwright test artifacts
+.playwright-mcp/
