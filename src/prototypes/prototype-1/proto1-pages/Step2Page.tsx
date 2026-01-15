@@ -18,7 +18,15 @@ export default function Step2Page() {
 
       <Card size="3">
         <Flex direction="column" gap="4" align="center">
-          <CheckCircle size={64} weight="duotone" style={{ color: 'var(--green-9)' }} />
+          <CheckCircle
+            size="64"
+            weight="duotone"
+            style={{
+              color: 'var(--green-9)',
+              width: 'var(--icon-size-2xl)',
+              height: 'var(--icon-size-2xl)'
+            }}
+          />
 
           <Box style={{ textAlign: 'center' }}>
             <Text as="div" size="5" weight="bold" style={{ color: 'var(--gray-12)' }}>
@@ -56,7 +64,7 @@ export default function Step2Page() {
           size="3"
           onClick={() => navigate('/prototype-1/step-1')}
         >
-          <ArrowLeft size={20} weight="bold" />
+          <ArrowLeft size="20" weight="bold" style={{ width: 'var(--icon-size-md)', height: 'var(--icon-size-md)' }} />
           Back
         </Button>
 
@@ -64,7 +72,7 @@ export default function Step2Page() {
           size="3"
           onClick={() => navigate('/')}
         >
-          <House size={20} weight="bold" />
+          <House size="20" weight="bold" style={{ width: 'var(--icon-size-md)', height: 'var(--icon-size-md)' }} />
           Home
         </Button>
       </Flex>

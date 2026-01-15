@@ -120,7 +120,7 @@
   color: var(--accent-11);
   text-decoration: none;
   border-bottom: 1px solid var(--accent-7);
-  transition: border-color 0.2s;
+  transition: border-color var(--duration-normal);
 }
 
 .markdown-document a:hover {

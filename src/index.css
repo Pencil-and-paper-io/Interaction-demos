@@ -16,6 +16,25 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Custom design tokens extending Radix system */
+  /* Transition durations for consistent motion */
+  --duration-fast: 0.15s;
+  --duration-normal: 0.2s;
+  --duration-slow: 0.3s;
+
+  /* Icon sizes aligned with spacing scale */
+  --icon-size-sm: 16px;   /* ~var(--space-4) */
+  --icon-size-md: 20px;   /* ~var(--space-5) */
+  --icon-size-lg: 32px;   /* ~var(--space-8) */
+  --icon-size-xl: 48px;   /* ~var(--space-12) */
+  --icon-size-2xl: 64px;  /* Large decorative icons */
+  --icon-size-3xl: 80px;  /* Hero/placeholder icons */
+
+  /* Screenshot/preview heights */
+  --preview-height-sm: 200px;
+  --preview-height-md: 280px;
+  --preview-height-lg: 400px;
 }
 
 body {
@@ -40,7 +59,7 @@ html[data-theme="dark"] {
 
 /* Ensure smooth transitions for theme changes */
 html {
-  transition: color-scheme 0.3s ease;
+  transition: color-scheme var(--duration-slow) ease;
 }
 
 /* Focus indicators for keyboard navigation */
@@ -122,12 +141,12 @@ article[role="button"]:focus-visible {
 
 /* Performance-optimized card hover effect */
 .prototype-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform var(--duration-normal) ease, box-shadow var(--duration-normal) ease;
   will-change: transform;
 }
 
 .prototype-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(calc(var(--space-1) * -1)); /* -4px using token */
   box-shadow: var(--shadow-5);
 }
 

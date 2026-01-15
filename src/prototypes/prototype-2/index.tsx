@@ -27,7 +27,7 @@ export default function Prototype2() {
               size="2"
               onClick={() => navigate('/')}
             >
-              <ArrowLeft size={20} weight="bold" />
+              <ArrowLeft size="20" weight="bold" style={{ width: 'var(--icon-size-md)', height: 'var(--icon-size-md)' }} />
             </Button>
             <Box>
               <Text size="2" style={{ color: 'var(--gray-11)' }}>Prototype 2</Text>
@@ -40,7 +40,15 @@ export default function Prototype2() {
           {/* Main Content */}
           <Card size="3" className={styles.card}>
             <Flex direction="column" align="center" gap="5">
-              <Sparkle size={56} weight="duotone" style={{ color: 'var(--accent-9)' }} />
+              <Sparkle
+                size="56"
+                weight="duotone"
+                style={{
+                  color: 'var(--accent-9)',
+                  width: 'var(--icon-size-xl)',
+                  height: 'var(--icon-size-xl)'
+                }}
+              />
 
               <Box style={{ textAlign: 'center' }}>
                 <Heading size="5" mb="2" style={{ color: 'var(--gray-12)' }}>
@@ -69,7 +77,7 @@ export default function Prototype2() {
                     disabled={!message.trim()}
                     style={{ width: '100%' }}
                   >
-                    <PaperPlaneTilt size={20} weight="bold" />
+                    <PaperPlaneTilt size="20" weight="bold" style={{ width: 'var(--icon-size-md)', height: 'var(--icon-size-md)' }} />
                     Submit
                   </Button>
                 </Flex>

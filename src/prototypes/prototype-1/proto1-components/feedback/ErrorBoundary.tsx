@@ -41,7 +41,15 @@ export default class ErrorBoundary extends Component<Props, State> {
           }}
         >
           <Flex direction="column" align="center" gap="5" style={{ maxWidth: '600px' }}>
-            <WarningCircle size={64} weight="duotone" style={{ color: 'var(--red-9)' }} />
+            <WarningCircle
+              size="64"
+              weight="duotone"
+              style={{
+                color: 'var(--red-9)',
+                width: 'var(--icon-size-2xl)',
+                height: 'var(--icon-size-2xl)'
+              }}
+            />
 
             <Box style={{ textAlign: 'center' }}>
               <Heading size="6" mb="2" style={{ color: 'var(--gray-12)' }}>

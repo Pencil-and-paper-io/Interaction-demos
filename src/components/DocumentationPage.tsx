@@ -79,7 +79,7 @@ Check out the [CLAUDE.md](../CLAUDE.md) guide for documentation best practices.
               size="2"
               onClick={() => navigate('/')}
             >
-              <ArrowLeft size={20} weight="bold" />
+              <ArrowLeft size="20" weight="bold" style={{ width: 'var(--icon-size-md)', height: 'var(--icon-size-md)' }} />
               Back to Home
             </Button>
 

@@ -17,12 +17,12 @@
   background: var(--gray-2);
   border: 1px solid var(--gray-6);
   box-shadow: var(--shadow-3);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform var(--duration-normal) ease, box-shadow var(--duration-normal) ease;
 }
 
 .card:hover {
   box-shadow: var(--shadow-4);
-  transform: translateY(-2px);
+  transform: translateY(calc(var(--space-1) * -0.5)); /* -2px using token */
 }
 
 /* Only add will-change on hover-capable devices */
@@ -36,7 +36,7 @@
   background-color: var(--green-3);
   border: 1px solid var(--green-6);
   border-radius: var(--radius-2);
-  animation: fadeIn 0.3s ease;
+  animation: fadeIn var(--duration-slow) ease;
 }
 
 .infoBox {

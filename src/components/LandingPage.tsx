@@ -77,7 +77,7 @@ const PrototypeScreenshot = memo(function PrototypeScreenshot({
     <Box
       ref={containerRef}
       style={{
-        height: '280px',
+        height: 'var(--preview-height-md)',
         backgroundColor: 'var(--gray-3)',
         display: 'flex',
         alignItems: 'center',
@@ -118,8 +118,13 @@ const PrototypeScreenshot = memo(function PrototypeScreenshot({
       {/* Show icon only if screenshot failed to load or not yet loaded */}
       {(!imageLoaded || imageError) && (
         <IconComponent
-          size={80}
-          style={{ color: 'var(--gray-9)', opacity: 0.3 }}
+          size="80"
+          style={{
+            color: 'var(--gray-9)',
+            opacity: 0.3,
+            width: 'var(--icon-size-3xl)',
+            height: 'var(--icon-size-3xl)'
+          }}
           weight="duotone"
         />
       )}
@@ -312,7 +317,11 @@ export default function LandingPage() {
                         window.open(prototype.loomUrl, '_blank', 'noopener,noreferrer')
                       }}
                     >
-                      <Play size={16} weight="fill" />
+                      <Play
+                        size="16"
+                        weight="fill"
+                        style={{ width: 'var(--icon-size-sm)', height: 'var(--icon-size-sm)' }}
+                      />
                       Watch Loom
                     </Button>
                   )}

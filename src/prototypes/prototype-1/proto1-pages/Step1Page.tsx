@@ -50,7 +50,7 @@ export default function Step1Page() {
           size="3"
           onClick={() => navigate('/prototype-1')}
         >
-          <ArrowLeft size={20} weight="bold" />
+          <ArrowLeft size="20" weight="bold" style={{ width: 'var(--icon-size-md)', height: 'var(--icon-size-md)' }} />
           Back
         </Button>
 
@@ -60,7 +60,7 @@ export default function Step1Page() {
           disabled={!name.trim()}
         >
           Next
-          <ArrowRight size={20} weight="bold" />
+          <ArrowRight size="20" weight="bold" style={{ width: 'var(--icon-size-md)', height: 'var(--icon-size-md)' }} />
         </Button>
       </Flex>
     </Flex>

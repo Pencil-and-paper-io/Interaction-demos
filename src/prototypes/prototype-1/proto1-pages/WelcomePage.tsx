@@ -14,7 +14,15 @@ export default function WelcomePage() {
 
   return (
     <Flex direction="column" align="center" gap="6" style={{ paddingTop: 'var(--space-9)' }}>
-      <Cube size={80} weight="duotone" style={{ color: 'var(--accent-9)' }} />
+      <Cube
+        size="80"
+        weight="duotone"
+        style={{
+          color: 'var(--accent-9)',
+          width: 'var(--icon-size-3xl)',
+          height: 'var(--icon-size-3xl)'
+        }}
+      />
 
       <Box style={{ textAlign: 'center', maxWidth: '500px' }}>
         <Heading size="8" mb="3" style={{ color: 'var(--gray-12)' }}>
@@ -28,7 +36,7 @@ export default function WelcomePage() {
 
       <Button size="4" onClick={handleStart}>
         Get Started
-        <ArrowRight size={20} weight="bold" />
+        <ArrowRight size="20" weight="bold" style={{ width: 'var(--icon-size-md)', height: 'var(--icon-size-md)' }} />
       </Button>
 
       <Box mt="6" p="4" style={{

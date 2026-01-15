@@ -14,9 +14,9 @@ export default function ThemeToggle() {
       style={{ cursor: 'pointer' }}
     >
       {theme === 'light' ? (
-        <Moon size={20} weight="fill" />
+        <Moon size="20" weight="fill" style={{ width: 'var(--icon-size-md)', height: 'var(--icon-size-md)' }} />
       ) : (
-        <Sun size={20} weight="fill" />
+        <Sun size="20" weight="fill" style={{ width: 'var(--icon-size-md)', height: 'var(--icon-size-md)' }} />
       )}
     </IconButton>
   )
