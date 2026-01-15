@@ -73,7 +73,7 @@ const PrototypeScreenshot = memo(function PrototypeScreenshot({
     return () => observer.disconnect()
   }, [])
 
-  const screenshotPath = `${import.meta.env.BASE_URL}screenshots/${prototypeId}.png`
+  const screenshotPath = `${import.meta.env.BASE_URL}screenshots/${prototypeId}.png`.replace('//', '/')
 
   return (
     <Box
