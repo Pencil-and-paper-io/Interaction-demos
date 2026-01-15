@@ -17,12 +17,19 @@
   background: var(--gray-2);
   border: 1px solid var(--gray-6);
   box-shadow: var(--shadow-3);
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card:hover {
   box-shadow: var(--shadow-4);
   transform: translateY(-2px);
+}
+
+/* Only add will-change on hover-capable devices */
+@media (hover: hover) {
+  .card:hover {
+    will-change: transform;
+  }
 }
 
 .successMessage {

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { useMemo, useEffect, useState } from 'react'
+import { useMemo, useEffect, useState, useRef, memo } from 'react'
 import { Grid, Card, Heading, Text, Box, Flex, Inset, Button } from '@radix-ui/themes'
 import { Play, Cube, Sparkle } from '@phosphor-icons/react'
 import { getRelativeTime } from '../utils/relativeTime'
@@ -36,7 +36,8 @@ const prototypeData: Omit<PrototypeCard, 'lastUpdated'>[] = [
   }
 ]
 
-function PrototypeScreenshot({
+// Memoized screenshot component with Intersection Observer for efficient lazy loading
+const PrototypeScreenshot = memo(function PrototypeScreenshot({
   prototypeId,
   IconComponent
 }: {
@@ -45,9 +46,36 @@ function PrototypeScreenshot({
 }) {
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    // Use Intersection Observer for efficient lazy loading
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true)
+            observer.disconnect() // Stop observing once visible
+          }
+        })
+      },
+      {
+        rootMargin: '50px', // Start loading slightly before entering viewport
+        threshold: 0.01,
+      }
+    )
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current)
+    }
+
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <Box
+      ref={containerRef}
       style={{
         height: '280px',
         backgroundColor: 'var(--gray-3)',
@@ -59,14 +87,18 @@ function PrototypeScreenshot({
         overflow: 'hidden',
       }}
     >
-      {/* Hidden img to check if screenshot exists */}
-      <img
-        src={`/screenshots/${prototypeId}.png`}
-        alt={`Screenshot preview of ${prototypeId}`}
-        style={{ display: 'none' }}
-        onLoad={() => setImageLoaded(true)}
-        onError={() => setImageError(true)}
-      />
+      {/* Only load image when container is visible */}
+      {isVisible && (
+        <img
+          src={`/screenshots/${prototypeId}.png`}
+          alt={`Screenshot preview of ${prototypeId}`}
+          loading="lazy"
+          decoding="async"
+          style={{ display: 'none' }}
+          onLoad={() => setImageLoaded(true)}
+          onError={() => setImageError(true)}
+        />
+      )}
 
       {/* Show screenshot as background if loaded */}
       {imageLoaded && !imageError && (
@@ -83,7 +115,7 @@ function PrototypeScreenshot({
         />
       )}
 
-      {/* Show icon only if screenshot failed to load */}
+      {/* Show icon only if screenshot failed to load or not yet loaded */}
       {(!imageLoaded || imageError) && (
         <IconComponent
           size={80}
@@ -93,7 +125,7 @@ function PrototypeScreenshot({
       )}
     </Box>
   )
-}
+})
 
 export default function LandingPage() {
   const navigate = useNavigate()
@@ -123,7 +155,7 @@ export default function LandingPage() {
 
       {/* Header */}
       <Flex direction="column" align="center" gap="6" mb="9">
-        <Flex justify="between" align="center" width="100%" style={{ maxWidth: '1200px' }}>
+        <Flex justify="between" align="center" width="100%" className="fluid-container-lg">
           <Box />
           <Flex align="center" gap="3">
             <Text size="2" style={{ color: 'var(--gray-11)' }}>
@@ -133,7 +165,7 @@ export default function LandingPage() {
           </Flex>
         </Flex>
 
-        <Box style={{ textAlign: 'center', maxWidth: '700px' }}>
+        <Box style={{ textAlign: 'center' }} className="fluid-container-md">
           <Heading size="9" mb="3" style={{ color: 'var(--gray-12)' }}>
             Prototype Collection
           </Heading>
@@ -147,12 +179,13 @@ export default function LandingPage() {
       {/* Prototype Grid */}
       <main id="main-content">
       {prototypes.length === 0 ? (
-        <Box style={{
-          textAlign: 'center',
-          padding: 'var(--space-9)',
-          maxWidth: '600px',
-          margin: '0 auto'
-        }}>
+        <Box
+          className="fluid-container-sm"
+          style={{
+            textAlign: 'center',
+            padding: 'var(--space-9)',
+          }}
+        >
           <Heading size="6" mb="4" style={{ color: 'var(--gray-11)' }}>
             No prototypes yet
           </Heading>
@@ -174,7 +207,8 @@ export default function LandingPage() {
         <Grid
           columns={{ initial: '1', sm: '2', lg: '3' }}
           gap="8"
-          style={{ maxWidth: '1600px', margin: '0 auto', width: '100%' }}
+          className="fluid-container-xl"
+          style={{ width: '100%' }}
         >
           {prototypes.map((prototype) => {
             const IconComponent = prototype.icon
@@ -185,11 +219,11 @@ export default function LandingPage() {
                 asChild
               >
                 <article
+                  className="prototype-card"
                   tabIndex={0}
                   role="button"
                   aria-label={`View ${prototype.title} prototype`}
                   style={{
-                    transition: 'all 0.2s ease',
                     position: 'relative',
                     minHeight: '450px',
                     display: 'flex',
@@ -202,14 +236,6 @@ export default function LandingPage() {
                       e.preventDefault()
                       navigate(prototype.route)
                     }
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-4px)'
-                    e.currentTarget.style.boxShadow = 'var(--shadow-5)'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)'
-                    e.currentTarget.style.boxShadow = ''
                   }}
                 >
                 {/* Primary Visual Area - Screenshot */}
