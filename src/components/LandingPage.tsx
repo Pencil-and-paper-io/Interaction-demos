@@ -73,6 +73,8 @@ const PrototypeScreenshot = memo(function PrototypeScreenshot({
     return () => observer.disconnect()
   }, [])
 
+  const screenshotPath = `${import.meta.env.BASE_URL}screenshots/${prototypeId}.png`
+
   return (
     <Box
       ref={containerRef}
@@ -90,7 +92,7 @@ const PrototypeScreenshot = memo(function PrototypeScreenshot({
       {/* Only load image when container is visible */}
       {isVisible && (
         <img
-          src={`/screenshots/${prototypeId}.png`}
+          src={screenshotPath}
           alt={`Screenshot preview of ${prototypeId}`}
           loading="lazy"
           decoding="async"
@@ -108,7 +110,7 @@ const PrototypeScreenshot = memo(function PrototypeScreenshot({
           style={{
             position: 'absolute',
             inset: 0,
-            backgroundImage: `url(/screenshots/${prototypeId}.png)`,
+            backgroundImage: `url(${screenshotPath})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
