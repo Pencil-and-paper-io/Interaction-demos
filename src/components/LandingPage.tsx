@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useMemo, useEffect, useState, useRef, memo } from 'react'
 import { Grid, Card, Heading, Text, Box, Flex, Inset, Button } from '@radix-ui/themes'
 import { Play, Cube, Sparkle } from '@phosphor-icons/react'
@@ -96,7 +96,13 @@ const PrototypeScreenshot = memo(function PrototypeScreenshot({
           alt={`Screenshot preview of ${prototypeId}`}
           loading="lazy"
           decoding="async"
-          style={{ display: 'none' }}
+          style={{
+            position: 'absolute',
+            width: 0,
+            height: 0,
+            opacity: 0,
+            pointerEvents: 'none'
+          }}
           onLoad={() => setImageLoaded(true)}
           onError={() => setImageError(true)}
         />
@@ -135,8 +141,6 @@ const PrototypeScreenshot = memo(function PrototypeScreenshot({
 })
 
 export default function LandingPage() {
-  const navigate = useNavigate()
-
   // Clear prototype states when returning to home page
   useEffect(() => {
     clearProto1State()
@@ -225,24 +229,13 @@ export default function LandingPage() {
                 size="4"
                 asChild
               >
-                <article
+                <div
                   className="prototype-card"
-                  tabIndex={0}
-                  role="button"
-                  aria-label={`View ${prototype.title} prototype`}
                   style={{
                     position: 'relative',
                     minHeight: '450px',
                     display: 'flex',
                     flexDirection: 'column',
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => navigate(prototype.route)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
-                      navigate(prototype.route)
-                    }
                   }}
                 >
                 {/* Primary Visual Area - Screenshot */}
@@ -284,22 +277,38 @@ export default function LandingPage() {
                   <Flex direction="column" gap="2" style={{ marginTop: 'var(--space-2)' }}>
                     <Button
                       size="3"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        navigate(prototype.route)
-                      }}
+                      asChild
                     >
-                      View Prototype
+                      <Link
+                        to={prototype.route}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          textDecoration: 'none',
+                          width: '100%'
+                        }}
+                      >
+                        View Prototype
+                      </Link>
                     </Button>
                     <Button
                       size="3"
                       variant="soft"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        navigate(`/docs/${prototype.id}`)
-                      }}
+                      asChild
                     >
-                      Documentation
+                      <Link
+                        to={`/docs/${prototype.id}`}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          textDecoration: 'none',
+                          width: '100%'
+                        }}
+                      >
+                        Documentation
+                      </Link>
                     </Button>
                   </Flex>
 
@@ -328,7 +337,7 @@ export default function LandingPage() {
                     </Button>
                   )}
                 </Flex>
-                </article>
+                </div>
               </Card>
             )
           })}
