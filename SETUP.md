@@ -27,6 +27,8 @@ git commit -m "Initial commit from proto-template"
 npm install
 ```
 
+This will install all dependencies and automatically generate the prototype dates file (`src/data/prototype-dates.json`).
+
 ### 3. Configure for Your Project
 
 #### Update `vite.config.ts`

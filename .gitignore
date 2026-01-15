@@ -29,7 +29,6 @@ dist-ssr
 .env.*.local
 
 # Generated files
-src/data/prototype-dates.json
 *.tsbuildinfo
 
 # Playwright test artifacts

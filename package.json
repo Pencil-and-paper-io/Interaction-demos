@@ -8,6 +8,7 @@
     "build": "npm run generate-dates && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "postinstall": "npm run generate-dates",
     "generate-dates": "tsx scripts/generate-prototype-dates.ts",
     "screenshots": "tsx scripts/capture-screenshots.ts",
     "new-proto": "tsx scripts/scaffold-prototype.ts"
