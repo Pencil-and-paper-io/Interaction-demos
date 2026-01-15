@@ -42,3 +42,80 @@ html[data-theme="dark"] {
 html {
   transition: color-scheme 0.3s ease;
 }
+
+/* Focus indicators for keyboard navigation */
+*:focus {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--accent-9);
+  outline-offset: 2px;
+  border-radius: var(--radius-2);
+}
+
+/* Special focus treatment for buttons and interactive elements */
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--accent-9);
+  outline-offset: 2px;
+}
+
+/* Card focus indicator */
+article[role="button"]:focus-visible {
+  outline: 3px solid var(--accent-9);
+  outline-offset: 4px;
+  border-radius: var(--radius-3);
+}
+
+/* Skip link styles */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--accent-9);
+  color: white;
+  padding: var(--space-2) var(--space-4);
+  text-decoration: none;
+  border-radius: var(--radius-2);
+  z-index: 100;
+}
+
+.skip-link:focus {
+  top: var(--space-2);
+  left: var(--space-2);
+}
+
+/* Reduced motion support for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Text overflow handling utilities */
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-wrap {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Prevent flex/grid overflow */
+.flex-child-overflow,
+.grid-child-overflow {
+  min-width: 0;
+  min-height: 0;
+}

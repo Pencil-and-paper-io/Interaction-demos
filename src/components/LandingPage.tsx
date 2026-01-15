@@ -62,7 +62,7 @@ function PrototypeScreenshot({
       {/* Hidden img to check if screenshot exists */}
       <img
         src={`/screenshots/${prototypeId}.png`}
-        alt=""
+        alt={`Screenshot preview of ${prototypeId}`}
         style={{ display: 'none' }}
         onLoad={() => setImageLoaded(true)}
         onError={() => setImageError(true)}
@@ -71,6 +71,8 @@ function PrototypeScreenshot({
       {/* Show screenshot as background if loaded */}
       {imageLoaded && !imageError && (
         <Box
+          role="img"
+          aria-label={`Screenshot preview of ${prototypeId}`}
           style={{
             position: 'absolute',
             inset: 0,
@@ -114,6 +116,11 @@ export default function LandingPage() {
 
   return (
     <Box style={{ minHeight: '100vh', padding: 'var(--space-6)' }}>
+      {/* Skip Link for Keyboard Navigation */}
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
+
       {/* Header */}
       <Flex direction="column" align="center" gap="6" mb="9">
         <Flex justify="between" align="center" width="100%" style={{ maxWidth: '1200px' }}>
@@ -138,6 +145,7 @@ export default function LandingPage() {
       </Flex>
 
       {/* Prototype Grid */}
+      <main id="main-content">
       {prototypes.length === 0 ? (
         <Box style={{
           textAlign: 'center',
@@ -174,22 +182,36 @@ export default function LandingPage() {
               <Card
                 key={prototype.id}
                 size="4"
-                style={{
-                  transition: 'all 0.2s ease',
-                  position: 'relative',
-                  minHeight: '450px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-4px)'
-                  e.currentTarget.style.boxShadow = 'var(--shadow-5)'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)'
-                  e.currentTarget.style.boxShadow = ''
-                }}
+                asChild
               >
+                <article
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`View ${prototype.title} prototype`}
+                  style={{
+                    transition: 'all 0.2s ease',
+                    position: 'relative',
+                    minHeight: '450px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => navigate(prototype.route)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      navigate(prototype.route)
+                    }
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-4px)'
+                    e.currentTarget.style.boxShadow = 'var(--shadow-5)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)'
+                    e.currentTarget.style.boxShadow = ''
+                  }}
+                >
                 {/* Primary Visual Area - Screenshot */}
                 <Inset side="top" pb="current">
                   <PrototypeScreenshot
@@ -229,14 +251,20 @@ export default function LandingPage() {
                   <Flex direction="column" gap="2" style={{ marginTop: 'var(--space-2)' }}>
                     <Button
                       size="3"
-                      onClick={() => navigate(prototype.route)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        navigate(prototype.route)
+                      }}
                     >
                       View Prototype
                     </Button>
                     <Button
                       size="3"
                       variant="soft"
-                      onClick={() => navigate(`/docs/${prototype.id}`)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        navigate(`/docs/${prototype.id}`)
+                      }}
                     >
                       Documentation
                     </Button>
@@ -253,6 +281,7 @@ export default function LandingPage() {
                         marginTop: 'var(--space-1)',
                       }}
                       onClick={(e) => {
+                        e.stopPropagation()
                         e.preventDefault()
                         window.open(prototype.loomUrl, '_blank', 'noopener,noreferrer')
                       }}
@@ -262,11 +291,13 @@ export default function LandingPage() {
                     </Button>
                   )}
                 </Flex>
+                </article>
               </Card>
             )
           })}
         </Grid>
       )}
+      </main>
     </Box>
   )
 }

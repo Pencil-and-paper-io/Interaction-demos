@@ -13,21 +13,32 @@ const FlowContext = createContext<FlowContextType | undefined>(undefined)
 
 export function FlowProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<FlowState>(() => {
-    // Load state from localStorage on mount
-    const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored) {
-      try {
-        return JSON.parse(stored)
-      } catch {
-        return initialState
+    // Load state from localStorage on mount with error handling
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY)
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        // Validate the structure of parsed data
+        if (parsed && typeof parsed === 'object' && 'currentStep' in parsed) {
+          return parsed
+        }
       }
+    } catch (error) {
+      // localStorage may be disabled, full, or contain invalid JSON
+      console.warn('Failed to load flow state from localStorage:', error)
     }
     return initialState
   })
 
-  // Persist state to localStorage whenever it changes
+  // Persist state to localStorage whenever it changes with error handling
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+    } catch (error) {
+      // localStorage may be full or disabled
+      console.warn('Failed to persist flow state to localStorage:', error)
+      // Continue without localStorage - app will work but won't persist
+    }
   }, [state])
 
   const updateFormData = (key: string, value: unknown) => {
@@ -56,7 +67,11 @@ export function FlowProvider({ children }: { children: ReactNode }) {
 
   const resetFlow = () => {
     setState(initialState)
-    localStorage.removeItem(STORAGE_KEY)
+    try {
+      localStorage.removeItem(STORAGE_KEY)
+    } catch (error) {
+      console.warn('Failed to clear flow state from localStorage:', error)
+    }
   }
 
   return (
@@ -76,5 +91,9 @@ export function useFlow() {
 
 // Utility function to clear state - called from landing page
 export function clearProto1State() {
-  localStorage.removeItem(STORAGE_KEY)
+  try {
+    localStorage.removeItem(STORAGE_KEY)
+  } catch (error) {
+    console.warn('Failed to clear proto1 state from localStorage:', error)
+  }
 }

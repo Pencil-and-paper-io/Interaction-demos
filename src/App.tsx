@@ -11,13 +11,18 @@ const Prototype2 = lazy(() => import('./prototypes/prototype-2'))
 // Loading component
 function LoadingFallback() {
   return (
-    <Box style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: '100vh'
-    }}>
-      <Heading size="6">Loading...</Heading>
+    <Box
+      role="status"
+      aria-live="polite"
+      aria-label="Loading prototype"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh'
+      }}
+    >
+      <Heading size="6">Loading prototype...</Heading>
     </Box>
   )
 }

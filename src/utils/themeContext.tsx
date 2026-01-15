@@ -11,16 +11,32 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<ThemeMode>(() => {
-    // Get stored theme or use system preference
-    const stored = localStorage.getItem('theme') as ThemeMode | null
-    if (stored) return stored
+    // Get stored theme or use system preference with error handling
+    try {
+      const stored = localStorage.getItem('theme') as ThemeMode | null
+      if (stored === 'light' || stored === 'dark') {
+        return stored
+      }
+    } catch (error) {
+      console.warn('Failed to load theme from localStorage:', error)
+    }
 
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    // Fallback to system preference
+    try {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    } catch {
+      return 'light' // Ultimate fallback
+    }
   })
 
   useEffect(() => {
-    // Store preference
-    localStorage.setItem('theme', theme)
+    // Store preference with error handling
+    try {
+      localStorage.setItem('theme', theme)
+    } catch (error) {
+      console.warn('Failed to persist theme to localStorage:', error)
+      // Theme will work but won't persist across sessions
+    }
   }, [theme])
 
   const toggleTheme = () => {
