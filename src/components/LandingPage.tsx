@@ -1,9 +1,9 @@
-import { Link } from 'react-router-dom'
 import { useMemo, useEffect, useState, useRef, memo } from 'react'
-import { Grid, Card, Heading, Text, Box, Flex, Inset, Button } from '@radix-ui/themes'
+import { Grid, Card, Heading, Text, Box, Flex, Inset } from '@radix-ui/themes'
 import { Play, Cube, Sparkle } from '@phosphor-icons/react'
 import { getRelativeTime } from '../utils/relativeTime'
 import ThemeToggle from './ThemeToggle'
+import Button from './Button'
 import prototypeDates from '../data/prototype-dates.json'
 import { clearProto1State } from '../prototypes/prototype-1/proto1-components/layout/FlowProvider'
 
@@ -275,40 +275,11 @@ export default function LandingPage() {
 
                   {/* CTAs */}
                   <Flex direction="column" gap="2" style={{ marginTop: 'var(--space-2)' }}>
-                    <Button
-                      size="3"
-                      asChild
-                    >
-                      <Link
-                        to={prototype.route}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          textDecoration: 'none',
-                          width: '100%'
-                        }}
-                      >
-                        View Prototype
-                      </Link>
+                    <Button as="a" href={prototype.route} size="3" variant="solid">
+                      View Prototype
                     </Button>
-                    <Button
-                      size="3"
-                      variant="soft"
-                      asChild
-                    >
-                      <Link
-                        to={`/docs/${prototype.id}`}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          textDecoration: 'none',
-                          width: '100%'
-                        }}
-                      >
-                        Documentation
-                      </Link>
+                    <Button as="a" href={`/docs/${prototype.id}`} size="3" variant="soft">
+                      Documentation
                     </Button>
                   </Flex>
 
@@ -318,12 +289,10 @@ export default function LandingPage() {
                       size="2"
                       variant="ghost"
                       style={{
-                        width: '100%',
                         gap: 'var(--space-2)',
                         marginTop: 'var(--space-1)',
                       }}
                       onClick={(e) => {
-                        e.stopPropagation()
                         e.preventDefault()
                         window.open(prototype.loomUrl, '_blank', 'noopener,noreferrer')
                       }}
