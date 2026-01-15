@@ -1,0 +1,63 @@
+/* Prototype 2 - CSS Module Styles */
+
+/*
+  This demonstrates per-prototype styling using CSS Modules.
+  All class names are scoped to this prototype automatically.
+
+  IMPORTANT: Always use Radix variables, never raw values!
+*/
+
+.container {
+  min-height: 100vh;
+  background-color: var(--color-background);
+  padding: var(--space-6);
+}
+
+.card {
+  background: var(--gray-2);
+  border: 1px solid var(--gray-6);
+  box-shadow: var(--shadow-3);
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-4);
+  transform: translateY(-2px);
+}
+
+.successMessage {
+  background-color: var(--green-3);
+  border: 1px solid var(--green-6);
+  border-radius: var(--radius-2);
+  animation: fadeIn 0.3s ease;
+}
+
+.infoBox {
+  padding: var(--space-4);
+  background-color: var(--gray-3);
+  border: 1px solid var(--gray-6);
+  border-radius: var(--radius-3);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/*
+  ✅ Good: Using Radix variables
+  padding: var(--space-4);
+  color: var(--gray-12);
+  border-radius: var(--radius-3);
+
+  ❌ Bad: Raw values (breaks theming)
+  padding: 16px;
+  color: #000000;
+  border-radius: 8px;
+*/

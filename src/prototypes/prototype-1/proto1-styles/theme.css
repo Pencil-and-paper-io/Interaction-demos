@@ -1,0 +1,94 @@
+/* Prototype 1 - Per-prototype Radix variable overrides */
+
+/*
+  This file demonstrates how to use Radix variables exclusively.
+  All prototypes should have their own theme.css file for isolation.
+
+  Import this at the top of your Prototype1.tsx component.
+*/
+
+/* You can override Radix variables for this prototype only */
+.proto1-container {
+  /* Example: Use Radix spacing variables */
+  padding: var(--space-6);
+  gap: var(--space-4);
+
+  /* Example: Use Radix color variables */
+  background-color: var(--color-background);
+  color: var(--gray-12);
+
+  /* Example: Use Radix radius variables */
+  border-radius: var(--radius-3);
+}
+
+/* Example button styling with Radix variables */
+.proto1-button {
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--accent-9);
+  color: white;
+  border: none;
+  border-radius: var(--radius-2);
+  font-size: var(--font-size-2);
+  line-height: var(--line-height-2);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.proto1-button:hover {
+  background-color: var(--accent-10);
+}
+
+.proto1-button:active {
+  background-color: var(--accent-11);
+}
+
+/* Example card with Radix variables */
+.proto1-card {
+  background-color: var(--gray-2);
+  border: 1px solid var(--gray-6);
+  border-radius: var(--radius-3);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-2);
+}
+
+/* Example text styles */
+.proto1-title {
+  font-size: var(--font-size-6);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-6);
+  color: var(--gray-12);
+  margin-bottom: var(--space-3);
+}
+
+.proto1-body {
+  font-size: var(--font-size-2);
+  line-height: var(--line-height-2);
+  color: var(--gray-11);
+}
+
+/* Example layout helpers */
+.proto1-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.proto1-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/*
+  IMPORTANT: Never use raw values like:
+  ❌ padding: 16px;
+  ❌ color: #000000;
+  ❌ border-radius: 8px;
+
+  Always use Radix variables:
+  ✅ padding: var(--space-4);
+  ✅ color: var(--gray-12);
+  ✅ border-radius: var(--radius-3);
+*/
