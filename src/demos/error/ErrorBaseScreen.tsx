@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import {
   MagnifyingGlass,
   Question,
@@ -16,6 +16,8 @@ import { orgChartRoot, type OrgChartNode, type OrgChartPerson } from './orgChart
 import { OrgChartDrawer } from './OrgChartDrawer'
 import styles from './ErrorBaseScreen.module.css'
 
+const LINE_COLOR = '#5e7ce2'
+
 type ErrorBaseScreenProps = {
   errorVariant?: string
 }
@@ -23,6 +25,59 @@ type ErrorBaseScreenProps = {
 export function ErrorBaseScreen({ errorVariant }: ErrorBaseScreenProps) {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set(['1', '3']))
   const [drawerPerson, setDrawerPerson] = useState<OrgChartPerson | null>(null)
+  const [highlightCardId, setHighlightCardId] = useState<string | null>(null)
+  const nodeRefs = useRef<Record<string, HTMLElement | null>>({})
+  const linesRef = useRef<{ remove(): void }[]>([])
+
+  const registerNodeRef = useCallback((id: string, el: HTMLElement | null) => {
+    nodeRefs.current[id] = el
+  }, [])
+
+  useEffect(() => {
+    // When the drawer is open, hide connectors entirely so they never sit above the UI
+    if (drawerPerson) {
+      linesRef.current.forEach((line) => line.remove())
+      linesRef.current = []
+      return
+    }
+
+    const LeaderLine = window.LeaderLine
+    if (!LeaderLine) return
+
+    const raf = requestAnimationFrame(() => {
+      linesRef.current.forEach((line) => line.remove())
+      linesRef.current = []
+
+      const get = (id: string) => nodeRefs.current[id]
+      const one = get('1')
+      const two = get('2')
+      const three = get('3')
+      const four = get('4')
+      const five = get('5')
+
+      const opts = {
+        startSocket: 'bottom' as const,
+        endSocket: 'top' as const,
+        color: LINE_COLOR,
+        size: 2,
+        path: 'grid',
+        startPlug: 'behind',
+        endPlug: 'disc',
+        // Keep connectors visually under overlays/drawers
+        zIndex: 10
+      }
+      if (one && two) linesRef.current.push(new LeaderLine(one, two, opts))
+      if (one && three) linesRef.current.push(new LeaderLine(one, three, opts))
+      if (one && four) linesRef.current.push(new LeaderLine(one, four, opts))
+      if (expandedIds.has('3') && three && five) linesRef.current.push(new LeaderLine(three, five, opts))
+    })
+
+    return () => {
+      cancelAnimationFrame(raf)
+      linesRef.current.forEach((line) => line.remove())
+      linesRef.current = []
+    }
+  }, [expandedIds, drawerPerson])
 
   const toggleExpand = useCallback((id: string) => {
     setExpandedIds((prev) => {
@@ -40,6 +95,17 @@ export function ErrorBaseScreen({ errorVariant }: ErrorBaseScreenProps) {
   const closeDrawer = useCallback(() => {
     setDrawerPerson(null)
   }, [])
+
+  const handleUpdateSuccess = useCallback((personId: string) => {
+    setHighlightCardId(personId)
+    setDrawerPerson(null)
+  }, [])
+
+  useEffect(() => {
+    if (highlightCardId === null) return
+    const t = setTimeout(() => setHighlightCardId(null), 2000)
+    return () => clearTimeout(t)
+  }, [highlightCardId])
 
   return (
     <div className={styles.root}>
@@ -103,10 +169,6 @@ export function ErrorBaseScreen({ errorVariant }: ErrorBaseScreenProps) {
 
       <main className={styles.main}>
         <div className={styles.orgChart}>
-          <svg className={styles.orgChartLines} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-            <line x1="50" y1="8" x2="50" y2="30" />
-            <line x1="24" y1="16.5" x2="76" y2="16.5" />
-          </svg>
           <div className={styles.orgChartContent}>
           <OrgChartTree
             node={orgChartRoot}
@@ -114,13 +176,22 @@ export function ErrorBaseScreen({ errorVariant }: ErrorBaseScreenProps) {
             toggleExpand={toggleExpand}
             openDrawer={openDrawer}
             drawerPersonId={drawerPerson?.id ?? null}
+            highlightCardId={highlightCardId}
+            registerNodeRef={registerNodeRef}
           />
           </div>
         </div>
       </main>
 
       </div>
-      {drawerPerson && <OrgChartDrawer person={drawerPerson} onClose={closeDrawer} errorVariant={errorVariant} />}
+      {drawerPerson && (
+        <OrgChartDrawer
+          person={drawerPerson}
+          onClose={closeDrawer}
+          onUpdateSuccess={handleUpdateSuccess}
+          errorVariant={errorVariant}
+        />
+      )}
     </div>
   )
 }
@@ -131,18 +202,22 @@ type OrgChartTreeProps = {
   toggleExpand: (id: string) => void
   openDrawer: (person: OrgChartPerson) => void
   drawerPersonId: string | null
+  highlightCardId: string | null
+  registerNodeRef: (id: string, el: HTMLElement | null) => void
 }
 
-function OrgChartTree({ node, expandedIds, toggleExpand, openDrawer, drawerPersonId }: OrgChartTreeProps) {
+function OrgChartTree({ node, expandedIds, toggleExpand, openDrawer, drawerPersonId, highlightCardId, registerNodeRef }: OrgChartTreeProps) {
   const { person, children } = node
   const isExpanded = expandedIds.has(person.id)
   const hasChildren = children.length > 0
+  const isHighlighted = highlightCardId === person.id
 
   return (
     <div className={styles.nodeConnector}>
       <button
+        ref={(el) => registerNodeRef(person.id, el)}
         type="button"
-        className={`${styles.nodeCard} ${drawerPersonId === person.id ? styles.nodeCardSelected : ''}`}
+        className={`${styles.nodeCard} ${drawerPersonId === person.id ? styles.nodeCardSelected : ''} ${isHighlighted ? styles.nodeCardHighlighted : ''}`}
         onClick={() => openDrawer(person)}
       >
         <div className={styles.nodeName}>
@@ -181,6 +256,8 @@ function OrgChartTree({ node, expandedIds, toggleExpand, openDrawer, drawerPerso
                   toggleExpand={toggleExpand}
                   openDrawer={openDrawer}
                   drawerPersonId={drawerPersonId}
+                  highlightCardId={highlightCardId}
+                  registerNodeRef={registerNodeRef}
                 />
               ))}
             </div>

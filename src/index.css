@@ -139,6 +139,11 @@ article[role="button"]:focus-visible {
   min-height: 0;
 }
 
+/* Ensure external LeaderLine connectors sit under overlays like drawers */
+.leader-line {
+  z-index: 10 !important;
+}
+
 /* Performance-optimized card hover effect */
 .prototype-card {
   transition: transform var(--duration-normal) ease, box-shadow var(--duration-normal) ease;

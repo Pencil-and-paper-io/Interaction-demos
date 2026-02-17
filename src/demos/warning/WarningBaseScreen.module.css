@@ -8,7 +8,7 @@
   --warning-border: #2d3a5c;
   --warning-chipBg: #2d3a5c;
   --warning-chipHover: #364470;
-  min-height: 100%;
+  min-height: 100vh;
   background: var(--warning-bg);
   color: var(--warning-text);
 }
@@ -177,6 +177,11 @@
   font-weight: 600;
   color: white;
   max-width: fit-content;
+  cursor: default;
+}
+
+button.chipEditable {
+  cursor: pointer;
 }
 
 .chipLeadIcon {
@@ -272,7 +277,7 @@
   background: var(--warning-lowlight);
   border: 1px solid var(--warning-border);
   border-radius: 8px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .table {
@@ -321,8 +326,27 @@
   border-bottom: none;
 }
 
+.table tbody tr {
+  transition: opacity 0.4s cubic-bezier(0.33, 1, 0.68, 1), transform 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+  transform-origin: top;
+}
+
 .table tbody tr:hover {
   background: rgba(255, 255, 255, 0.03);
+}
+
+.rowDeleting {
+  opacity: 0;
+  transform: scaleY(0);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.rowDeleting td {
+  padding-top: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+  transition: padding 0.4s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 .table td:last-child {
@@ -367,18 +391,16 @@
   color: var(--warning-text);
 }
 
+/* Portal dropdown: use explicit colors so it’s visible when rendered outside .root */
 .rowMenuDropdown {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 4px;
   min-width: 140px;
   padding: 4px 0;
-  background: var(--warning-surface);
-  border: 1px solid var(--warning-border);
+  background: #1e2840;
+  border: 1px solid #2d3a5c;
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-  z-index: 20;
+  z-index: 50;
+  color: #e8ecf4;
 }
 
 .rowMenuItem {
@@ -389,7 +411,7 @@
   padding: 10px 14px;
   border: none;
   background: transparent;
-  color: var(--warning-text);
+  color: #e8ecf4;
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
   text-align: left;
@@ -397,12 +419,12 @@
 }
 
 .rowMenuItem:hover {
-  background: var(--warning-chipBg);
+  background: #2d3a5c;
 }
 
 .rowMenuItem svg {
   flex-shrink: 0;
-  color: var(--warning-textMuted);
+  color: #8b9bb5;
 }
 
 .rowMenuItem:hover svg {
@@ -506,4 +528,248 @@
 
 .modalConfirmBtn:hover {
   background: #d85c5c;
+}
+
+.modalConfirmBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.modalConfirmBtn:disabled:hover {
+  background: #c94a4a;
+}
+
+/* Project information modal (dependencies) */
+.modalProjectInfo {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 480px;
+  padding: 24px;
+  background: var(--warning-lowlight);
+  border: 1px solid var(--warning-border);
+  border-radius: 12px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+  z-index: 101;
+}
+
+.modalForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.modalLabel {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--warning-textMuted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Custom select (so the menu isn't the OS default gray dropdown) */
+.modalSelectButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: var(--warning-text);
+  background: var(--warning-surface);
+  border: 1px solid var(--warning-border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.modalSelectButton:hover {
+  border-color: rgba(90, 123, 196, 0.75);
+}
+
+.modalSelectButton:focus-visible {
+  outline: none;
+  border-color: #5a7bc4;
+  box-shadow: 0 0 0 3px rgba(90, 123, 196, 0.25);
+}
+
+.modalSelectButtonOpen {
+  border-color: #5a7bc4;
+  box-shadow: 0 0 0 3px rgba(90, 123, 196, 0.18);
+}
+
+.modalSelectValue {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modalSelectChevron {
+  color: var(--warning-textMuted);
+}
+
+/* Portaled menu: use explicit dark-theme colors so it’s visible outside .root */
+.modalSelectMenu {
+  padding: 6px;
+  min-width: 160px;
+  background: #1e2840;
+  border: 1px solid #2d3a5c;
+  border-radius: 10px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.45);
+  z-index: 120;
+  color: #e8ecf4;
+}
+
+.modalSelectOption {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #e8ecf4;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.modalSelectOption:hover {
+  background: rgba(90, 123, 196, 0.25);
+  color: #e8ecf4;
+}
+
+.modalSelectOptionSelected {
+  background: rgba(90, 123, 196, 0.35);
+  color: #e8ecf4;
+}
+
+.modalSelectCheck {
+  width: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #cfe1ff;
+}
+
+.modalReadOnly {
+  padding: 10px 12px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: var(--warning-text);
+  background: var(--warning-surface);
+  border: 1px solid var(--warning-border);
+  border-radius: 8px;
+}
+
+.modalWarningBlock {
+  margin-top: 8px;
+  padding: 14px;
+  background: rgba(197, 208, 230, 0.12);
+  border: 1px solid rgba(197, 208, 230, 0.4);
+  border-radius: 8px;
+}
+
+.modalWarningText {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--warning-text);
+  margin: 0 0 14px;
+}
+
+.modalChoiceRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* Same style as chipEditable (3 phase standard) but 25% smaller: padding 6px 11px, font 10px, radius 6px */
+.choiceChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 11px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  background: rgba(30, 40, 64, 0.6);
+  color: var(--warning-text);
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.choiceChip:hover:not(.choiceChipSelected) {
+  border-color: rgba(255, 255, 255, 0.95);
+  background: rgba(45, 58, 92, 0.7);
+}
+
+.choiceChip:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(197, 208, 230, 0.4);
+}
+
+.choiceChipSelected {
+  border-color: #4a6ab5;
+  background: #ffffff;
+  color: #10172f;
+}
+
+.choiceChipSelected:hover {
+  border-color: #4a6ab5;
+  background: #ffffff;
+  color: #10172f;
+}
+
+/* Loading state: shimmer rows then cascade-in */
+.rowShimmer {
+  opacity: 1;
+}
+
+.rowShimmer td {
+  padding: 14px;
+  vertical-align: middle;
+}
+
+.shimmerBar {
+  height: 16px;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--warning-surface) 0%,
+    var(--warning-border) 50%,
+    var(--warning-surface) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.rowLoaded {
+  animation: rowCascadeIn 0.35s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+}
+
+@keyframes rowCascadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

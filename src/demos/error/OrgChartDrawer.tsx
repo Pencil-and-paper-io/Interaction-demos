@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { Envelope, Phone, DeviceMobile, X, Check, ArrowLeft } from '@phosphor-icons/react'
 import type { OrgChartPerson } from './orgChartData'
 import styles from './ErrorBaseScreen.module.css'
@@ -6,6 +6,7 @@ import styles from './ErrorBaseScreen.module.css'
 type OrgChartDrawerProps = {
   person: OrgChartPerson
   onClose: () => void
+  onUpdateSuccess?: (personId: string) => void
   errorVariant?: string
 }
 
@@ -91,7 +92,7 @@ function getInitialFormValues(person: OrgChartPerson) {
 
 const initialLevelsAllowed = { level1: true, level2: true, level3: false }
 
-export function OrgChartDrawer({ person, onClose, errorVariant }: OrgChartDrawerProps) {
+export function OrgChartDrawer({ person, onClose, onUpdateSuccess, errorVariant }: OrgChartDrawerProps) {
   const [formValues, setFormValues] = useState(() => getInitialFormValues(person))
   const [drawerView, setDrawerView] = useState<'form' | 'config'>('form')
   const [levelsAllowed, setLevelsAllowed] = useState(initialLevelsAllowed)
@@ -99,6 +100,7 @@ export function OrgChartDrawer({ person, onClose, errorVariant }: OrgChartDrawer
   const [saveButtonState, setSaveButtonState] = useState<'idle' | 'saved'>('idle')
   const [updateButtonReady, setUpdateButtonReady] = useState(true)
   const [updateButtonEnableAt, setUpdateButtonEnableAt] = useState<number | null>(null)
+  const [updateFeedbackState, setUpdateFeedbackState] = useState<'idle' | 'updated'>('idle')
   const initialValues = getInitialFormValues(person)
 
   useEffect(() => {
@@ -109,6 +111,7 @@ export function OrgChartDrawer({ person, onClose, errorVariant }: OrgChartDrawer
     setSaveButtonState('idle')
     setUpdateButtonReady(true)
     setUpdateButtonEnableAt(null)
+    setUpdateFeedbackState('idle')
   }, [person])
 
   useEffect(() => {
@@ -120,6 +123,15 @@ export function OrgChartDrawer({ person, onClose, errorVariant }: OrgChartDrawer
   const isOneStar = errorVariant === '1-star'
   const isTwoStar = errorVariant === '2-star'
   const isThreeStar = errorVariant === '3-star'
+
+  const handleBackFromConfig = useCallback(() => {
+    setDrawerView('form')
+    setUpdateButtonReady(false)
+    setUpdateButtonEnableAt(Date.now())
+    if (isThreeStar) {
+      setFormValues((prev) => ({ ...prev, level: 'Level 2' }))
+    }
+  }, [isThreeStar])
   const levelIsInvalid =
     formValues.level === 'Level 3' && (isOneStar || isTwoStar || (isThreeStar && !levelsAllowed.level3))
   const levelCountsAsDirty = formValues.level !== initialValues.level && !levelIsInvalid
@@ -156,11 +168,7 @@ export function OrgChartDrawer({ person, onClose, errorVariant }: OrgChartDrawer
             <button
               type="button"
               className={styles.drawerBackBtn}
-              onClick={() => {
-                setDrawerView('form')
-                setUpdateButtonReady(false)
-                setUpdateButtonEnableAt(Date.now())
-              }}
+              onClick={handleBackFromConfig}
               aria-label="Back to form"
             >
               <ArrowLeft size={20} weight="bold" />
@@ -259,8 +267,11 @@ export function OrgChartDrawer({ person, onClose, errorVariant }: OrgChartDrawer
         </button>
         <div className={styles.drawerHeader}>
           <h2 id="drawer-title" className={styles.drawerTitle}>
-            {person.jobTitle} ({person.jobRoleId}) {person.location}
+            {person.name}
           </h2>
+          <p className={styles.drawerSubtitle}>
+            {person.jobTitle} ({person.jobRoleId})
+          </p>
           <div className={styles.drawerContact}>
             <div className={styles.drawerContactRow}>
               <Envelope size={18} weight="regular" />
@@ -279,7 +290,9 @@ export function OrgChartDrawer({ person, onClose, errorVariant }: OrgChartDrawer
         <div className={styles.drawerBody}>
           {showConfigBanner && (
             <div className={styles.drawerErrorBanner} role="alert">
-              Level cannot be adjusted for this role because of configuration settings
+              Level cannot be adjusted due
+              <br />
+              to role configuration
               {isThreeStar && (
                 <button
                   type="button"
@@ -364,11 +377,26 @@ export function OrgChartDrawer({ person, onClose, errorVariant }: OrgChartDrawer
         <div className={styles.drawerFooter}>
           <button
             type="button"
-            className={styles.drawerUpdateBtn}
-            disabled={!isDirty || !updateButtonReady}
-            aria-disabled={!isDirty || !updateButtonReady}
+            className={`${styles.drawerUpdateBtn} ${updateFeedbackState === 'updated' ? styles.drawerUpdateBtnUpdated : ''}`}
+            disabled={!isDirty || !updateButtonReady || updateFeedbackState === 'updated'}
+            aria-disabled={!isDirty || !updateButtonReady || updateFeedbackState === 'updated'}
+            onClick={() => {
+              if (updateFeedbackState === 'updated') return
+              setUpdateFeedbackState('updated')
+              setTimeout(() => {
+                onUpdateSuccess?.(person.id)
+                onClose()
+              }, 1200)
+            }}
           >
-            UPDATE
+            {updateFeedbackState === 'updated' ? (
+              <>
+                <Check size={16} weight="bold" className={styles.drawerUpdateBtnCheck} aria-hidden />
+                Updated
+              </>
+            ) : (
+              'UPDATE'
+            )}
           </button>
         </div>
       </div>
