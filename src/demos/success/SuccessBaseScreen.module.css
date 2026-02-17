@@ -1,0 +1,542 @@
+/* Success demo baseline screen - design tokens */
+.root {
+  --success-nav-primary: #293a71;
+  --success-nav-secondary: #5e7ce2;
+  --success-btn-pink: #f7567c;
+  --success-btn-pink-hover: #e04a6d;
+  --success-page-bg: #e7ebf4;
+  --success-panel-border: #b8c4dd;
+  --success-table-header-bg: transparent;
+  --success-table-header-text: #293a71;
+  --success-status-pill-bg: #dce6f9;
+  --success-status-pill-text: #2563eb;
+  font-family: 'Poppins', var(--default-font-family), sans-serif;
+  min-height: 100vh;
+  background-color: var(--success-page-bg);
+}
+
+.primaryNav {
+  background-color: var(--success-nav-primary);
+  color: white;
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'Poppins', sans-serif;
+}
+
+.primaryNavLeft {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.primaryNavLink {
+  color: white;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.primaryNavLink:hover {
+  opacity: 0.9;
+}
+
+.primaryNavLinkActive {
+  font-weight: 600;
+}
+
+.primaryNavRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.userName {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.avatar {
+  width: 29px;
+  height: 29px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.avatar svg {
+  flex-shrink: 0;
+}
+
+.secondaryNav {
+  background-color: var(--success-nav-secondary);
+  color: white;
+  padding: 0 24px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'Poppins', sans-serif;
+}
+
+.secondaryNavTabs {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.secondaryNavTab {
+  padding: 0 20px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+}
+
+.secondaryNavTabActive {
+  font-weight: 600;
+}
+
+.secondaryNavTabActive::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: var(--success-btn-pink);
+}
+
+.newProjectBtn {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--success-btn-pink);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.newProjectBtn:hover {
+  background-color: var(--success-btn-pink-hover);
+}
+
+.main {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.panel {
+  background: white;
+  border: none;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(41, 58, 113, 0.08);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid #e5e7eb;
+  background: #fafafa;
+}
+
+.paginationBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 var(--space-2);
+  font-family: 'Poppins', sans-serif;
+  font-size: var(--font-size-2);
+  font-weight: 500;
+  color: #293a71;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--radius-2);
+  cursor: pointer;
+}
+
+.paginationBtn:hover:not(:disabled) {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.paginationBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.paginationNumActive {
+  background: #5e7ce2;
+  color: white;
+  border-color: #5e7ce2;
+}
+
+.paginationNumActive:hover:not(:disabled) {
+  background: #4c6bd6;
+  border-color: #4c6bd6;
+}
+
+/* Table uses system font per requirement (not Poppins) */
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+}
+
+.table thead {
+  background-color: var(--success-table-header-bg);
+  color: var(--success-table-header-text);
+}
+
+.table th {
+  text-align: left;
+  padding: 14px 16px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.table th:first-child {
+  width: 44px;
+  padding-left: 16px;
+}
+
+.table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: middle;
+  color: #293a71;
+}
+
+.table tbody tr {
+  border-left: 3px solid transparent;
+}
+
+.table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* When 3-star status row is shown below, remove stroke so it reads as one row */
+.dataRowAboveStatus td {
+  border-bottom: none;
+}
+
+.checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--success-nav-primary);
+}
+
+.statusPill {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  background-color: var(--success-status-pill-bg);
+  color: var(--success-status-pill-text);
+}
+
+.attachments {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #293a71;
+}
+
+.attachmentsSpinner {
+  animation: spin 0.8s linear infinite;
+}
+
+/* 3-star: row expand upload status container */
+.uploadStatusCell {
+  padding: 0;
+  vertical-align: top;
+  border-bottom: 1px solid #e5e7eb;
+  transition: border-color 0.28s ease-out;
+}
+
+.uploadStatusCellDismissing {
+  border-bottom-width: 0;
+  overflow: hidden;
+}
+
+.uploadStatusContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 16px;
+  background-color: #f5f7fd;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: height 0.28s ease-out, opacity 0.28s ease-out, padding 0.28s ease-out;
+}
+
+.uploadStatusContainerDismissing {
+  height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  opacity: 0;
+}
+
+.uploadStatusSpinner {
+  flex-shrink: 0;
+  animation: spin 0.8s linear infinite;
+  color: #5e7ce2;
+}
+
+.uploadStatusCheck {
+  flex-shrink: 0;
+  color: #749c75;
+}
+
+.uploadStatusLabel {
+  flex-shrink: 0;
+  font-size: 14px;
+  color: #293a71;
+}
+
+.uploadStatusFilename {
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: bold;
+  color: #293a71;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.uploadStatusQueue {
+  flex-shrink: 0;
+  font-size: 14px;
+  color: #5365a1;
+}
+
+.uploadProgressTrack {
+  flex: 1;
+  min-width: 0;
+  height: 8px;
+  border-radius: 4px;
+  background-color: rgba(94, 124, 226, 0.2);
+  overflow: hidden;
+}
+
+.uploadProgressFill {
+  height: 100%;
+  border-radius: 4px;
+  background-color: #f7567c;
+  transition: width 0.2s ease-out;
+}
+
+.uploadPauseBtn {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: #f5f7fd;
+  color: #5365a1;
+  cursor: pointer;
+}
+
+.uploadPauseBtn:hover {
+  background-color: #e8ecf9;
+  color: #293a71;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ellipsis {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #5e7ce2;
+  background-color: transparent;
+  border: none;
+  border-radius: 4px;
+}
+
+.ellipsis svg {
+  fill: #5e7ce2;
+  stroke: transparent;
+}
+
+.ellipsis:hover {
+  background-color: transparent;
+  color: #5e7ce2;
+}
+
+.ellipsis:hover svg {
+  fill: #5e7ce2;
+  stroke: transparent;
+}
+
+.rowMenuWrap {
+  position: relative;
+  display: inline-block;
+}
+
+.rowMenuDropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  min-width: 160px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(41, 58, 113, 0.15);
+  padding: 6px 0;
+  z-index: 100;
+}
+
+.rowMenuDropdown button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #293a71;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: 'Poppins', sans-serif;
+}
+
+.rowMenuDropdown button:hover {
+  background: #f3f4f6;
+}
+
+.rowMenuDropdown button svg {
+  flex-shrink: 0;
+  color: #5e7ce2;
+}
+
+.sortIcon {
+  margin-left: 4px;
+  opacity: 0.8;
+  vertical-align: middle;
+}
+
+.filterIcon {
+  margin-left: 4px;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+/* Success 1-star toasts - bottom left of content container (positioned relative to it via DemoView .contentContainer transform) */
+.toastContainer {
+  position: fixed;
+  bottom: var(--space-4);
+  left: var(--space-4);
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-2);
+  z-index: 999;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background-color: #749c75;
+  color: white;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-3);
+  font-size: var(--font-size-2);
+  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 0 4px 12px rgba(41, 58, 113, 0.15);
+  /* Y (transform): linear so no mid-animation acceleration jerk; opacity: ease-in-out for soft fade */
+  transition: opacity 0.85s ease-in-out, transform 0.85s linear;
+  animation: toastEnter 0.85s linear;
+  pointer-events: auto;
+}
+
+.toastMessage {
+  flex: 1;
+  min-width: 0;
+}
+
+.toastClose {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  border-radius: var(--radius-2);
+}
+
+.toastClose:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Opacity and transform animated together; timing is linear so Y has constant velocity (no lurch) */
+@keyframes toastEnter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.toastExiting {
+  opacity: 0;
+  transform: translateY(6px);
+}

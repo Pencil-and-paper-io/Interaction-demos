@@ -1,0 +1,731 @@
+/* Error demo – org chart. Reuses Success colour/typography; monospace for cards and drawer. */
+.root {
+  --error-nav-primary: #293a71;
+  --error-nav-secondary: #5e7ce2;
+  --error-page-bg: #e7ebf4;
+  --error-card-bg: white;
+  --error-card-shadow: 0 2px 8px rgba(41, 58, 113, 0.08);
+  --error-line: #5e7ce2;
+  font-family: 'Poppins', var(--default-font-family), sans-serif;
+  min-height: 100%;
+  background-color: var(--error-page-bg);
+  display: flex;
+}
+
+.sidebar {
+  width: 64px;
+  flex-shrink: 0;
+  background: var(--error-nav-primary);
+  color: white;
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.sidebarTitle {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 0 8px;
+  text-align: center;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.sidebarIcon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.sidebarIcon:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebarIconWrap {
+  position: relative;
+}
+
+.sidebarIconWrapActive .sidebarIcon {
+  background: rgba(94, 124, 226, 0.5);
+  color: white;
+}
+
+.sidebarIconWrapActive::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 24px;
+  background: white;
+  border-radius: 0 2px 2px 0;
+}
+
+.sidebarIconActive {
+  background: rgba(94, 124, 226, 0.5);
+  color: white;
+}
+
+.mainWrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Top bar: breadcrumb left, icons right; slightly lighter periwinkle than hero */
+.topBar {
+  background-color: #b8c8f5;
+  padding: 0 24px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'Poppins', sans-serif;
+}
+
+.topBar .breadcrumb {
+  font-size: 14px;
+  color: #293a71;
+}
+
+.topBarIcons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.topBarIcons button {
+  padding: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #5365a1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.topBarIcons button:hover {
+  background: rgba(41, 58, 113, 0.08);
+  color: #293a71;
+}
+
+/* Hero: darker blue, title left / actions right */
+.hero {
+  background-color: var(--error-nav-secondary);
+  color: white;
+  padding: 0 24px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'Poppins', sans-serif;
+}
+
+.heroTitle {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.headerBtn {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.headerBtn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.viewToggle {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.viewToggleBtn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.viewToggleBtnActive {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.viewToggleBtn:hover:not(.viewToggleBtnActive) {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.main {
+  padding: 24px;
+  min-height: 200px;
+}
+
+/* Org chart – tree layout; connector lines sit behind cards */
+.orgChart {
+  position: relative;
+  padding: var(--space-4) 0;
+  min-height: 380px;
+}
+
+.orgChartContent {
+  position: relative;
+  z-index: 1;
+}
+
+.orgChartLines {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.orgChartLines svg {
+  width: 100%;
+  height: 600px;
+  max-height: 100%;
+  display: block;
+}
+
+.orgChartLines line {
+  stroke: var(--error-line);
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+
+.orgLevel {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 48px;
+  margin-bottom: 32px;
+}
+
+.orgLevel:last-child {
+  margin-bottom: 0;
+}
+
+/* Node card – monospace font */
+.nodeCard {
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.45;
+  background: var(--error-card-bg);
+  border-radius: 8px;
+  padding: 14px 18px;
+  min-width: 220px;
+  max-width: 280px;
+  box-shadow: var(--error-card-shadow);
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  text-align: left;
+}
+
+.nodeCard:hover {
+  box-shadow: 0 4px 12px rgba(41, 58, 113, 0.12);
+}
+
+.nodeCardSelected {
+  border-color: #e04a6d;
+  box-shadow: 0 4px 12px rgba(224, 74, 109, 0.2);
+}
+
+.nodeName {
+  font-weight: 700;
+  color: #293a71;
+  margin-bottom: 4px;
+}
+
+.nodeMeta {
+  color: #5365a1;
+  font-size: 12px;
+}
+
+.nodeLocation {
+  color: #5365a1;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* Connector line with expand/collapse */
+.nodeConnector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.nodeChildren {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 48px;
+  margin-top: 16px;
+  padding-top: 16px;
+  position: relative;
+}
+
+.expandBtnRowAboveManjul {
+  margin-left: 3px;
+}
+
+.expandBtn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--error-line);
+  background: white;
+  color: var(--error-line);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.expandBtn:hover {
+  background: var(--error-line);
+  color: white;
+}
+
+.expandBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 50%;
+  background: #dce6f9;
+  color: #293a71;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 6px;
+  font-family: ui-monospace, monospace;
+}
+
+/* Drawer overlay */
+.drawerBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 100;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  max-width: 400px;
+  height: 100%;
+  background: white;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
+  z-index: 101;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.drawerHeader {
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid var(--gray-5);
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
+  font-size: 14px;
+}
+
+.drawerTitle {
+  font-weight: 700;
+  color: #293a71;
+  margin: 0 0 12px;
+}
+
+.drawerContact {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  color: #5365a1;
+}
+
+.drawerContactRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.drawerContactRow svg {
+  flex-shrink: 0;
+  color: #5e7ce2;
+}
+
+.drawerBody {
+  flex: 1;
+  overflow: auto;
+  padding: 24px;
+}
+
+.drawerErrorBanner {
+  padding: 12px 14px;
+  margin-bottom: 20px;
+  background: var(--red-2);
+  border: 1px solid var(--red-7);
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  color: var(--red-11);
+  line-height: 1.4;
+  animation: drawerBannerEaseIn 0.25s ease-out;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.drawerBannerEditBtn {
+  margin-left: auto;
+  padding: 6px 12px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--red-11);
+  background: white;
+  border: 1px solid var(--red-7);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.drawerBannerEditBtn:hover {
+  background: var(--red-3);
+}
+
+.drawerConfigHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid var(--gray-5);
+}
+
+.drawerBackBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--gray-11);
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.drawerBackBtn:hover {
+  background: var(--gray-3);
+  color: var(--gray-12);
+}
+
+.drawerConfigTitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #293a71;
+  margin: 0;
+}
+
+.drawerCheckboxList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.drawerCheckboxRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
+  font-size: 13px;
+  color: #293a71;
+  cursor: pointer;
+}
+
+.drawerCheckboxRow input {
+  width: 18px;
+  height: 18px;
+  accent-color: #5e7ce2;
+}
+
+.drawerConfigApplyMessage {
+  margin: 0;
+  margin-top: 8px;
+  padding: 10px 12px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  color: var(--gray-11);
+  background: var(--gray-2);
+  border-radius: 6px;
+  line-height: 1.4;
+}
+
+
+@keyframes drawerBannerEaseIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.drawerField {
+  margin-bottom: 32px;
+}
+
+.drawerFieldLabel {
+  display: block;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #293a71;
+  margin-bottom: 6px;
+}
+
+.drawerFieldInput {
+  width: 100%;
+  padding: 10px 12px;
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
+  font-size: 13px;
+  border: 1px solid var(--gray-7);
+  border-radius: 6px;
+  color: #293a71;
+  background: white;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.drawerFieldInput:hover:not(:disabled):not([readonly]) {
+  border-color: var(--gray-8);
+}
+
+.drawerFieldInput:focus {
+  outline: none;
+  border-color: #5e7ce2;
+  box-shadow: 0 0 0 2px rgba(94, 124, 226, 0.25);
+}
+
+.drawerFieldInput:focus-visible {
+  outline: 2px solid #5e7ce2;
+  outline-offset: 2px;
+}
+
+/* Text inputs: show text cursor when editable */
+input.drawerFieldInput:not([readonly]) {
+  cursor: text;
+}
+
+/* Custom inline dropdown – opens below field, no native overlay */
+.drawerSelectWrap {
+  position: relative;
+}
+
+.drawerSelectTrigger {
+  width: 100%;
+  padding: 10px 36px 10px 12px;
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
+  font-size: 13px;
+  border: 1px solid var(--gray-7);
+  border-radius: 6px;
+  color: #293a71;
+  background: white;
+  box-sizing: border-box;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23293a71' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+.drawerSelectTrigger:hover {
+  border-color: var(--gray-8);
+}
+
+.drawerSelectTrigger[aria-expanded='true'] {
+  border-color: #5e7ce2;
+  box-shadow: 0 0 0 2px rgba(94, 124, 226, 0.25);
+}
+
+.drawerSelectList {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  margin-top: 4px;
+  padding: 4px 0;
+  background: white;
+  border: 1px solid var(--gray-7);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  z-index: 10;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.drawerSelectOption {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 12px;
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
+  font-size: 13px;
+  color: #293a71;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.1s ease;
+  gap: 8px;
+}
+
+.drawerSelectOption:hover {
+  background: var(--gray-3);
+}
+
+.drawerSelectOptionSelected {
+  background: #5e7ce2;
+  color: white;
+}
+
+.drawerSelectOptionSelected:hover {
+  background: #4c6bd6;
+  color: white;
+}
+
+.drawerSelectOptionCheck {
+  display: inline-flex;
+  width: 14px;
+  flex-shrink: 0;
+  justify-content: center;
+}
+
+.drawerFieldHint {
+  display: block;
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--gray-10);
+  margin-top: 6px;
+}
+
+.drawerFieldError {
+  display: block;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  color: var(--red-9);
+  /* Pull up so it sits close to the field it applies to */
+  margin-top: -28px;
+  /* Space before the next field's label */
+  margin-bottom: 10px;
+}
+
+.drawerFooter {
+  padding: 20px 24px;
+  border-top: 1px solid var(--gray-5);
+}
+
+.drawerUpdateBtn {
+  width: 100%;
+  padding: 12px 24px;
+  background: #5e7ce2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.5s ease, color 0.5s ease;
+}
+
+.drawerUpdateBtn:hover {
+  background: #4c6bd6;
+}
+
+.drawerUpdateBtn:disabled {
+  background: var(--gray-6);
+  color: var(--gray-10);
+  cursor: not-allowed;
+}
+
+.drawerUpdateBtn:disabled:hover {
+  background: var(--gray-6);
+  color: var(--gray-10);
+}
+
+.drawerClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--gray-10);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.drawerClose:hover {
+  background: var(--gray-3);
+  color: var(--gray-12);
+}

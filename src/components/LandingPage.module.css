@@ -1,0 +1,142 @@
+/* Landing page – presentation-optimized styling */
+
+/* Text colour: 293A71 or 50% opacity 293A71 */
+.root {
+  --landing-text: #293a71;
+  --landing-text-muted: rgba(41, 58, 113, 0.5);
+  --landing-border: #4365c2;
+  font-family: 'Poppins', var(--default-font-family), sans-serif;
+  min-height: 100vh;
+  padding: var(--space-6);
+  background-color: #f5f7fd;
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 864px;
+  margin: 0 auto var(--space-6);
+}
+
+.logo {
+  display: block;
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* H1 – Poppins 60px */
+.pageTitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 60px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--landing-text);
+  margin: 0;
+}
+
+.titleBlock {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* List items – border 4365C2 2pt, icon + vertical border + title, title 24px, default opacity 50%. Container 20% wider than 720px = 864px */
+.demoList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: 864px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.demoItem {
+  display: flex;
+  align-items: stretch;
+  background: var(--color-background);
+  border: 2px solid var(--landing-border);
+  border-radius: var(--radius-3);
+  overflow: hidden;
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+
+.demoItem:hover,
+.demoItem:focus-within {
+  opacity: 1;
+}
+
+.demoItemLink {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  text-decoration: none;
+  color: var(--landing-text);
+}
+
+/* Icon cell – border to the right spans full height of list item */
+.demoItemIconCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 56px;
+  padding: var(--space-4);
+  border-right: 2px solid var(--landing-border);
+  align-self: stretch;
+}
+
+.demoItemIconCell svg {
+  color: var(--landing-border);
+}
+
+/* Title – 24px, vertically centered in row */
+.demoItemTitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  padding: var(--space-4) var(--space-5);
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* Category section heading (optional) */
+.categorySection {
+  max-width: 864px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: var(--space-4);
+}
+
+.categoryHeading {
+  font-family: 'Poppins', sans-serif;
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--landing-text);
+  margin: 0 0 var(--space-3);
+}
+
+.mainContent {
+  width: 100%;
+  max-width: 864px;
+  margin: 0 auto;
+}
+
+.themeRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-left: auto;
+  color: var(--landing-text-muted);
+  font-size: var(--font-size-2);
+}

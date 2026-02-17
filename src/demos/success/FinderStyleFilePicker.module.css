@@ -1,0 +1,273 @@
+/* Mac Finder–style file picker modal */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  font-family: 'Poppins', system-ui, sans-serif;
+}
+
+.dialog {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  width: 720px;
+  max-width: 90vw;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.header {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.headerNav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.headerNavBtn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #374151;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.headerNavBtn:hover {
+  background: #f3f4f6;
+}
+
+.headerTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 12px;
+  color: #293a71;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.headerSearch {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: #f3f4f6;
+  border-radius: 6px;
+  width: 180px;
+}
+
+.headerSearch input {
+  border: none;
+  background: none;
+  font-size: 13px;
+  color: #374151;
+  outline: none;
+  width: 100%;
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  min-height: 320px;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 180px;
+  border-right: 1px solid #e5e7eb;
+  padding: 12px 0;
+  background: #fafafa;
+  flex-shrink: 0;
+}
+
+.sidebarSection {
+  margin-bottom: 16px;
+}
+
+.sidebarSectionTitle {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  padding: 0 16px 6px;
+}
+
+.sidebarItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  font-size: 13px;
+  color: #293a71;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.sidebarItem:hover {
+  background: #f3f4f6;
+}
+
+.sidebarItemActive {
+  background: #e5e7eb;
+}
+
+.sidebarItem svg {
+  flex-shrink: 0;
+  color: #5e7ce2;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  padding: 16px;
+  gap: 16px;
+}
+
+.foldersColumn {
+  width: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.folderItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #293a71;
+  cursor: pointer;
+  border-radius: 6px;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.folderItem:hover {
+  background: #f3f4f6;
+}
+
+.folderItemActive {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.folderItem svg {
+  flex-shrink: 0;
+  color: #5e7ce2;
+}
+
+.filesColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: auto;
+}
+
+.fileItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #293a71;
+  cursor: pointer;
+  border-radius: 6px;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.fileItem:hover {
+  background: #f3f4f6;
+}
+
+.fileItemSelected {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.fileItem svg {
+  flex-shrink: 0;
+  color: #6b7280;
+}
+
+.fileItemSelected svg {
+  color: #2563eb;
+}
+
+.footer {
+  padding: 12px 16px;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.footerBtn {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+}
+
+.footerBtnSecondary {
+  background: #fff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.footerBtnSecondary:hover {
+  background: #f9fafb;
+}
+
+.footerBtnPrimary {
+  background: #5e7ce2;
+  color: white;
+}
+
+.footerBtnPrimary:hover {
+  background: #4c6bd6;
+}
+
+.footerBtnPrimary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.newFolderBtn {
+  margin-right: auto;
+}

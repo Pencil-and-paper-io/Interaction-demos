@@ -1,0 +1,164 @@
+/* Demo page layout: content + nav fit in one viewport; content scrolls inside its area */
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  background: var(--color-background);
+}
+
+/* Content area: takes remaining height (~85%), does not exceed viewport */
+.contentSection {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-4);
+  padding-bottom: var(--space-2);
+  overflow: visible;
+}
+
+/* Content container: fills content area, scrolls internally; softer shadow can extend toward nav.
+   transform creates containing block so fixed toasts inside are positioned relative to this box. */
+.contentContainer {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  background: white;
+  border: 1px solid #4365c2;
+  border-radius: var(--radius-4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateZ(0);
+}
+
+/* Header bar: ~36px high, transparent, bit of space above bottom edge */
+.headerBar {
+  flex-shrink: 0;
+  height: 36px;
+  font-family: 'Poppins', var(--default-font-family), sans-serif;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--space-4) var(--space-3);
+  background: transparent;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+/* Left: navigation contents (logo + breadcrumb) */
+.headerLeftPill {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.logoLink {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.logoImg {
+  display: block;
+  height: 20px;
+  width: auto;
+  object-fit: contain;
+}
+
+.interactionDemosLink {
+  color: #293a71;
+  text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.interactionDemosLink:hover {
+  color: #4365c2;
+  text-decoration: underline;
+}
+
+.breadcrumbSep {
+  color: var(--gray-8);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.demoTitle {
+  color: var(--gray-11);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Embed button: far right */
+.codeButton {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid #4365c2;
+  border-radius: var(--radius-2);
+  color: #4365c2;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.codeButton:hover {
+  background: var(--gray-2);
+  color: #293a71;
+}
+
+.codeButton:active {
+  background: var(--gray-3);
+}
+
+/* Copy embed: floating in content area bottom right (periwinkle), all demos */
+.copyEmbedFloating {
+  position: fixed;
+  right: var(--space-4);
+  bottom: var(--space-4);
+  z-index: 10;
+}
+
+.copyEmbedFloatingBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: 44px;
+  padding: 0 var(--space-3);
+  background: #5e7ce2;
+  border: none;
+  border-radius: var(--radius-3);
+  color: white;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.copyEmbedFloatingBtn:hover {
+  background: #4c6bd6;
+  color: white;
+}
+
+.copyEmbedFloatingBtn:active {
+  background: #435fc9;
+}

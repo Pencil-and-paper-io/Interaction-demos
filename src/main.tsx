@@ -18,7 +18,7 @@ function ThemedApp() {
       radius="medium"
       scaling="100%"
     >
-      <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <BrowserRouter basename={import.meta.env.BASE_URL === '/' || import.meta.env.BASE_URL === '' ? undefined : import.meta.env.BASE_URL}>
         <App />
       </BrowserRouter>
     </Theme>
