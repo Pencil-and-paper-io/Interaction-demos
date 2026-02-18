@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
+import confetti from 'canvas-confetti'
 import {
   CaretUpDown,
   CaretLeft,
@@ -81,6 +82,15 @@ export function SuccessBaseScreen({ successVariant }: { successVariant?: string 
   const [uploadPaused, setUploadPaused] = useState(false)
   const [uploadCompleteAwaitingDismiss, setUploadCompleteAwaitingDismiss] = useState(false)
   const [uploadStatusDismissing, setUploadStatusDismissing] = useState(false)
+  const [overkillOverlayVisible, setOverkillOverlayVisible] = useState(false)
+  const [overkillOverlayExiting, setOverkillOverlayExiting] = useState(false)
+  const [overkillProgress, setOverkillProgress] = useState(0)
+  const [overkillPhase, setOverkillPhase] = useState<'progress' | 'confetti'>('progress')
+  const [overkillSubtextVisible, setOverkillSubtextVisible] = useState(false)
+  const overkillRowIdRef = useRef<string | null>(null)
+  const overkillCountRef = useRef(0)
+  const overkillConfettiStartedRef = useRef(false)
+  const overkillCanvasRef = useRef<HTMLCanvasElement | null>(null)
   const menuRef = useRef<HTMLDivElement>(null)
   const toastIdRef = useRef(0)
   const dismissTimeoutsRef = useRef<Record<string, number | undefined>>({})
@@ -144,6 +154,71 @@ export function SuccessBaseScreen({ successVariant }: { successVariant?: string 
     }, 280)
     return () => window.clearTimeout(t)
   }, [uploadStatusDismissing])
+
+  // Overkill: animate progress 0 → 100 over ~2s
+  useEffect(() => {
+    if (!overkillOverlayVisible || overkillPhase !== 'progress') return
+    const start = Date.now()
+    const durationMs = 2000
+    const tick = () => {
+      const elapsed = Date.now() - start
+      const p = Math.min(100, (elapsed / durationMs) * 100)
+      setOverkillProgress(p)
+      if (p < 100) requestAnimationFrame(tick)
+    }
+    const id = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(id)
+  }, [overkillOverlayVisible, overkillPhase])
+
+  // Overkill: when progress hits 100, switch to confetti and run for 7s (once per overlay).
+  // Don't include overkillPhase in deps so the interval isn't cleared when we set phase to 'confetti'.
+  useEffect(() => {
+    if (!overkillOverlayVisible || overkillProgress < 100) return
+    if (overkillConfettiStartedRef.current) return
+    overkillConfettiStartedRef.current = true
+    setOverkillPhase('confetti')
+    setOverkillSubtextVisible(false)
+    const subtextTimer = window.setTimeout(() => setOverkillSubtextVisible(true), 1000)
+    const rowId = overkillRowIdRef.current
+    const count = overkillCountRef.current
+    if (rowId && count > 0) {
+      setProjects((prev) =>
+        prev.map((p) =>
+          p.id === rowId ? { ...p, attachments: p.attachments + count } : p
+        )
+      )
+      overkillRowIdRef.current = null
+      overkillCountRef.current = 0
+    }
+    const canvas = overkillCanvasRef.current
+    const fire = canvas ? confetti.create(canvas) : confetti
+    const confettiDurationMs = 7000
+    const confettiEnd = Date.now() + confettiDurationMs
+    const fadeOutDurationMs = 400
+    const interval = setInterval(() => {
+      if (Date.now() > confettiEnd) {
+        clearInterval(interval)
+        window.clearTimeout(subtextTimer)
+        setOverkillOverlayExiting(true)
+        window.setTimeout(() => {
+          overkillConfettiStartedRef.current = false
+          setOverkillOverlayVisible(false)
+          setOverkillOverlayExiting(false)
+          setOverkillProgress(0)
+          setOverkillPhase('progress')
+          setOverkillSubtextVisible(false)
+        }, fadeOutDurationMs)
+        return
+      }
+      fire({ particleCount: 8, spread: 70, origin: { y: 0.6 } })
+      fire({ particleCount: 8, angle: 60, spread: 55, origin: { x: 0 } })
+      fire({ particleCount: 8, angle: 120, spread: 55, origin: { x: 1 } })
+    }, 200)
+    return () => {
+      clearInterval(interval)
+      window.clearTimeout(subtextTimer)
+    }
+  }, [overkillOverlayVisible, overkillProgress])
 
   const openAddFiles = (rowId: string) => {
     setMenuOpenRowId(null)
@@ -212,6 +287,19 @@ export function SuccessBaseScreen({ successVariant }: { successVariant?: string 
 
     const is2Star = successVariant === '2-star'
     const is3Star = successVariant === '3-star'
+    const isOverkill = successVariant === 'overkill'
+
+    if (isOverkill) {
+      overkillRowIdRef.current = rowId
+      overkillCountRef.current = selectedCount
+      overkillConfettiStartedRef.current = false
+      setOverkillSubtextVisible(false)
+      setOverkillOverlayExiting(false)
+      setOverkillOverlayVisible(true)
+      setOverkillProgress(0)
+      setOverkillPhase('progress')
+      return
+    }
 
     if (is3Star) {
       const fileNames = selectedFileNames.length > 0 ? selectedFileNames : Array(selectedCount).fill('File')
@@ -518,6 +606,43 @@ export function SuccessBaseScreen({ successVariant }: { successVariant?: string 
             setUploadTargetRowId(null)
           }}
         />
+      )}
+
+      {successVariant === 'overkill' && overkillOverlayVisible && (
+        <div
+          className={`${styles.overkillOverlay} ${overkillOverlayExiting ? styles.overkillOverlayExiting : ''}`}
+          role="status"
+          aria-live="polite"
+          aria-label="Upload in progress"
+        >
+          <canvas
+            ref={overkillCanvasRef}
+            className={styles.overkillCanvas}
+            width={typeof window !== 'undefined' ? window.innerWidth : 800}
+            height={typeof window !== 'undefined' ? window.innerHeight : 600}
+            aria-hidden="true"
+          />
+          <div className={styles.overkillContent}>
+            {overkillPhase === 'progress' ? (
+              <>
+                <div className={styles.overkillLabel}>Uploading files…</div>
+                <div className={styles.overkillProgressTrack}>
+                  <div
+                    className={styles.overkillProgressFill}
+                    style={{ width: `${overkillProgress}%` }}
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div className={styles.overkillConfettiLabel}>Upload complete!</div>
+                {overkillSubtextVisible && (
+                  <div className={styles.overkillSubtext}>Amazing job buddy!</div>
+                )}
+              </>
+            )}
+          </div>
+        </div>
       )}
     </div>
   )

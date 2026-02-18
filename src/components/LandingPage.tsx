@@ -3,7 +3,9 @@ import React, { useEffect, useState } from 'react'
 import {
   ChartLine,
   CheckCircle,
+  Confetti,
   CursorClick,
+  Gear,
   Star,
   StarHalf,
   XCircle,
@@ -32,6 +34,10 @@ function getVariantIcon(variant: DemoVariant, category: DemoCategory): { Icon: R
       return { Icon: StarHalf, weight: 'regular' }
     case '3-star':
       return { Icon: Star, weight: 'fill' }
+    case 'overkill':
+      return { Icon: Confetti, weight: 'bold' }
+    case 'prevention':
+      return { Icon: Gear, weight: 'regular' }
     default:
       return { Icon: categoryIcons[category.id] ?? ChartLine, weight: 'regular' }
   }

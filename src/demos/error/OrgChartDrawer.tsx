@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { Envelope, Phone, DeviceMobile, X, Check, ArrowLeft } from '@phosphor-icons/react'
+import { Envelope, Phone, DeviceMobile, X, Check, ArrowLeft, Gear } from '@phosphor-icons/react'
 import type { OrgChartPerson } from './orgChartData'
 import styles from './ErrorBaseScreen.module.css'
 
@@ -80,6 +80,99 @@ function DrawerSelect({ id, label, options, value, onChange, onBlur }: DrawerSel
   )
 }
 
+/** Prevention variant: Level dropdown with Level 1/2, separator "Unavailable for this role" + gear, Level 3 disabled */
+function DrawerLevelSelectPrevention({
+  id,
+  label,
+  value,
+  onChange,
+  onEditRole
+}: {
+  id: string
+  label: string
+  value: string
+  onChange: (v: string) => void
+  onEditRole: () => void
+}) {
+  const [open, setOpen] = useState(false)
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    function handleClickOutside(e: MouseEvent) {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [open])
+
+  return (
+    <div className={styles.drawerField}>
+      <label className={styles.drawerFieldLabel} htmlFor={id}>
+        {label}
+      </label>
+      <div className={styles.drawerSelectWrap} ref={wrapRef}>
+        <button
+          ref={triggerRef}
+          type="button"
+          id={id}
+          className={styles.drawerSelectTrigger}
+          aria-expanded={open}
+          aria-haspopup="listbox"
+          aria-label={label}
+          onClick={() => setOpen((o) => !o)}
+        >
+          {value}
+        </button>
+        {open && (
+          <div className={styles.drawerSelectList} role="listbox" aria-label={label}>
+            {(['Level 1', 'Level 2'] as const).map((opt) => (
+              <button
+                key={opt}
+                type="button"
+                role="option"
+                aria-selected={opt === value}
+                className={`${styles.drawerSelectOption} ${opt === value ? styles.drawerSelectOptionSelected : ''}`}
+                onClick={() => {
+                  onChange(opt)
+                  setOpen(false)
+                  triggerRef.current?.focus()
+                }}
+              >
+                <span className={styles.drawerSelectOptionCheck} aria-hidden>
+                  {opt === value ? <Check size={14} weight="bold" /> : null}
+                </span>
+                {opt}
+              </button>
+            ))}
+            <div className={styles.drawerSelectSeparator} role="separator" />
+            <div className={styles.drawerSelectUnavailableRow}>
+              <span className={styles.drawerSelectUnavailableLabel}>Unavailable for this role</span>
+              <button
+                type="button"
+                className={styles.drawerSelectGearBtn}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setOpen(false)
+                  onEditRole()
+                }}
+                title="edit role"
+                aria-label="edit role"
+              >
+                <Gear size={16} weight="fill" />
+              </button>
+            </div>
+            <div className={styles.drawerSelectOptionDisabled} role="option" aria-disabled="true">
+              Level 3
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 function getInitialFormValues(person: OrgChartPerson) {
   return {
     seniorityLevel: person.seniorityLevel,
@@ -123,6 +216,7 @@ export function OrgChartDrawer({ person, onClose, onUpdateSuccess, errorVariant 
   const isOneStar = errorVariant === '1-star'
   const isTwoStar = errorVariant === '2-star'
   const isThreeStar = errorVariant === '3-star'
+  const isPrevention = errorVariant === 'prevention'
 
   const handleBackFromConfig = useCallback(() => {
     setDrawerView('form')
@@ -269,9 +363,22 @@ export function OrgChartDrawer({ person, onClose, onUpdateSuccess, errorVariant 
           <h2 id="drawer-title" className={styles.drawerTitle}>
             {person.name}
           </h2>
-          <p className={styles.drawerSubtitle}>
-            {person.jobTitle} ({person.jobRoleId})
-          </p>
+          <div className={styles.drawerSubtitleRow}>
+            <p className={styles.drawerSubtitle}>
+              {person.jobTitle} ({person.jobRoleId})
+            </p>
+            {isPrevention && (
+              <button
+                type="button"
+                className={styles.drawerHeaderGearBtn}
+                onClick={() => setDrawerView('config')}
+                title="edit role"
+                aria-label="edit role"
+              >
+                <Gear size={18} weight="fill" />
+              </button>
+            )}
+          </div>
           <div className={styles.drawerContact}>
             <div className={styles.drawerContactRow}>
               <Envelope size={18} weight="regular" />
@@ -319,22 +426,32 @@ export function OrgChartDrawer({ person, onClose, onUpdateSuccess, errorVariant 
             onChange={(v) => setFormValues((prev) => ({ ...prev, jobTitle: v }))}
           />
           <>
-            <DrawerSelect
-              id="drawer-level"
-              label="Level"
-              options={['Level 1', 'Level 2', 'Level 3']}
-              value={formValues.level}
-              onChange={(v) => setFormValues((prev) => ({ ...prev, level: v }))}
-              onBlur={
-                isOneStar || isTwoStar || isThreeStar
-                  ? undefined
-                  : () => {
-                      if (formValues.level === 'Level 3') {
-                        setFormValues((prev) => ({ ...prev, level: 'Level 2' }))
+            {isPrevention ? (
+              <DrawerLevelSelectPrevention
+                id="drawer-level"
+                label="Level"
+                value={formValues.level === 'Level 3' ? 'Level 2' : formValues.level}
+                onChange={(v) => setFormValues((prev) => ({ ...prev, level: v }))}
+                onEditRole={() => setDrawerView('config')}
+              />
+            ) : (
+              <DrawerSelect
+                id="drawer-level"
+                label="Level"
+                options={['Level 1', 'Level 2', 'Level 3']}
+                value={formValues.level}
+                onChange={(v) => setFormValues((prev) => ({ ...prev, level: v }))}
+                onBlur={
+                  isOneStar || isTwoStar || isThreeStar
+                    ? undefined
+                    : () => {
+                        if (formValues.level === 'Level 3') {
+                          setFormValues((prev) => ({ ...prev, level: 'Level 2' }))
+                        }
                       }
-                    }
-              }
-            />
+                }
+              />
+            )}
             {showLevelInlineError && (
               <span className={styles.drawerFieldError} role="alert">
                 {levelInlineErrorText}
