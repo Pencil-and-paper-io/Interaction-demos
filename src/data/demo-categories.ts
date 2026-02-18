@@ -41,6 +41,7 @@ export const demoCategories: DemoCategory[] = [
       { id: '1-star', title: '1 star', routeSegment: '1-star' },
       { id: '2-star', title: '2 star', routeSegment: '2-star' },
       { id: '3-star', title: '3 star', routeSegment: '3-star' },
+      { id: 'overkill', title: 'Overkill', routeSegment: 'overkill' },
       { id: 'prevention', title: 'Prevention', routeSegment: 'prevention' }
     ]
   },
